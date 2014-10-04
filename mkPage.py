@@ -5,17 +5,14 @@ from imageAttrs import *
 import argparse
 #from __future__ import print_function
 import os
+from mkPage_cmn import *
 
-indOne = "    "
-indTwo = indOne + indOne
-indThree = indTwo + indOne
-indFour = indThree + indOne
+
 
 # 
 		
 # build imageAttrs object for single image
 def buildImageAttributes(srcDir, imageFilename):
-    print srcDir
     imageAttributes = imageAttrs(srcDir, imageFilename)
     return imageAttributes
 	
