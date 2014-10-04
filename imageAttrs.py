@@ -22,10 +22,12 @@ class imageAttrs:
             #print indFour + "mod time    : " , exifEditor.getModificationDateTime()
             #print indFour + "org time    : " , exifEditor.getOriginalDateTime()
             #print indFour + "description : " , exifEditor.getTag("Description")
+            self.modTime = exifEditor.getModificationDateTime()
             self.descr = exifEditor.getTag("Description")
 
         except RuntimeError:
             print indFour + "RuntimeError: for : " + imageFilename
+            self.modTime = ""
             self.descr = ""
 	
         image = Image.open(imgFile)
@@ -34,6 +36,7 @@ class imageAttrs:
         self.lon = get_lon(self.exif_data)   		
 		
         print indFour + "Description : 	" + self.descr		
+        print indFour + "mod time    : 	", self.modTime
         print indFour + "latitude    : ", self.lat
         print indFour + "longitude   : ", self.lon
         #get_field(image, "foo")
