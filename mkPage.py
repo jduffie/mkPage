@@ -11,6 +11,7 @@ indTwo = indOne + indOne
 indThree = indTwo + indOne
 indFour = indThree + indOne
 
+# 
 		
 # build imageAttrs object for single image
 def buildImageAttributes(srcDir, imageFilename):
