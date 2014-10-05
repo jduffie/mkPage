@@ -2,6 +2,7 @@ from epil import *
 import sys
 from pageAttrs import *
 from imageAttrs import *
+from pageView import *
 import argparse
 #from __future__ import print_function
 import os
@@ -16,7 +17,7 @@ def buildImageAttributes(srcDir, imageFilename):
     imageAttributes = imageAttrs(srcDir, imageFilename)
     return imageAttributes
 	
-# create a list of type imageAttrs
+# create a list of type imag  eAttrs
 def buildImageAttributesList(srcDir):
     print indTwo + "building image list ..."
 	# get a list of all images in the srcDir
@@ -35,8 +36,9 @@ def buildPageAttributes(srcDir):
     print indTwo + "parse folder's json file ..."
     jsonFile = open(srcDir + "/folder.json")
     pageAttributes = pageAttrs(jsonFile)
-    buildImageAttributesList(srcDir)
-    # TODO: append the list to the pageAttributes object	
+    imgModel = buildImageAttributesList(srcDir)
+    # TODO: append the list to the pageAttributes object
+    pageAttributes.setImageModels(imgModel)
     return pageAttributes
 
 
@@ -52,8 +54,10 @@ def main(argv):
     args = parseArgs(argv)
     print indOne + "Input: "
     print indTwo + "src directory: " +  args.srcDir	
-    buildPageAttributes(args.srcDir)
-
+    pageAttributes = buildPageAttributes(args.srcDir)
+    view = pageView(pageAttributes)
+    view.buildBody()
+    view.buildMap()
 
     
 

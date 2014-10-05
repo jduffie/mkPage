@@ -1,0 +1,67 @@
+
+<!-- start: MAP -->
+
+	<center>
+		<div id="ft_map">
+			<p>If any of the above pictures have been geotagged, then you should see pushpins marking the locations on the following map.  Note, you may need to zoom out or recenter to see the pushpins.</p>
+		</div>
+
+	   <div id="map" style="width: 550px; height: 450px"></div>
+	</center>
+
+
+    <noscript><b>JavaScript must be enabled in order for you to use Google Maps.</b> 
+		However, it seems JavaScript is either disabled or not supported by your browser. 
+		To view Google Maps, enable JavaScript by changing your browser options, and then 
+		try again.
+    </noscript>
+ 
+
+    <script type="text/javascript">
+		//<![CDATA[
+		
+			if (GBrowserIsCompatible()) {{ 
+
+				// A function to create the marker and set up the event window
+				// Dont try to unroll this function. It has to be here for the function closure
+				// Each instance of the function preserves the contends of a different instance
+				// of the "marker" and "html" variables which will be needed later when the event triggers.    
+				function createMarker(point,html) {{
+					var marker = new GMarker(point);
+					GEvent.addListener(marker, "click", function() {{
+						marker.openInfoWindowHtml(html);
+					}});
+					return marker;
+				}}
+			  
+				<!-- start: map center and zoom -->
+					// Display the map, with some controls and set the initial location 
+					var map = new GMap2(document.getElementById("map"));
+					map.addControl(new GLargeMapControl());
+					map.addControl(new GMapTypeControl());
+					// Raleigh map.setCenter(new GLatLng(35.790627,-78.864121),7);
+					// Raleigh map.setCenter(new GLatLng(43.907787,-79.359741),8);
+					// London 
+					map.setCenter(new GLatLng(51.500835,-0.124819),12);
+					// Tower of London map.setCenter(new GLatLng(51.500835,-0.120),13);
+					// Paris 
+					//map.setCenter(new GLatLng(48.866425,2.289394),13);
+				<!-- end: map center and zoom -->
+
+					
+				<!-- start: pushpins -->				
+		  
+{0}
+
+				<!-- end: pushpins -->
+			}}
+			
+			// display a warning if the browser was not compatible
+			else {{
+			  alert("Google Maps API is not compatible with this browser");
+			}}
+			
+		//]]>
+    </script>
+	
+<!-- end: MAP -->

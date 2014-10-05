@@ -15,7 +15,7 @@ class imageAttrs:
         self.data = []
         #print  indThree + imageFilename
         imgFile = srcDir + "/" + imageFilename
-        self.imgFile = imgFile
+        self.imgFile = imageFilename
 		
         try: 
             exifEditor = ExifEditor(srcDir + "/" + imageFilename)
