@@ -41,6 +41,16 @@ def buildPageAttributes(srcDir):
     pageAttributes.setImageModels(imgModel)
     return pageAttributes
 
+def buildPageFiles(srcDir, pageAttributes):	
+    view = pageView(pageAttributes)
+    bodyHtmlStr = view.buildBody()
+    with open (srcDir + "/body.html", "w") as tmpFile:
+        tmpFile.write(bodyHtmlStr)	
+        tmpFile.close()
+    mapHtmlStr = view.buildMap()
+    with open (srcDir + "/map.html", "w") as tmpFile:
+        tmpFile.write(mapHtmlStr)		
+        tmpFile.close()		
 
 def parseArgs(argv):
     parser = argparse.ArgumentParser()
@@ -55,10 +65,7 @@ def main(argv):
     print indOne + "Input: "
     print indTwo + "src directory: " +  args.srcDir	
     pageAttributes = buildPageAttributes(args.srcDir)
-    view = pageView(pageAttributes)
-    view.buildBody()
-    view.buildMap()
-
+    buildPageFiles(args.srcDir, pageAttributes)
     
 
 

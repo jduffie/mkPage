@@ -25,6 +25,7 @@ class pageView:
         with open (self.scriptDir + "/templates/body.tmpl", "r") as tmplFile:
             bodyTmpl = tmplFile.read()
         self.bodyHtml = bodyTmpl.format(pm.title, pm.date, pm.location, pm.description, picStr)		
+        return self.bodyHtml		
         #print self.bodyHtml
 		
     def buildMap(self):	
@@ -43,4 +44,4 @@ class pageView:
             mapTmpl = tmplFile.read()
         self.mapHtml = mapTmpl.format(ppStr)		
         #print self.mapHtml
-		
+        return self.mapHtml
