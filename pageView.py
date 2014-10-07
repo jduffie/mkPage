@@ -45,3 +45,12 @@ class pageView:
         self.mapHtml = mapTmpl.format(ppStr)		
         #print self.mapHtml
         return self.mapHtml
+        
+    def buildIndex(self):
+        # build string containing the pic html
+        with open (self.scriptDir + "/templates/index.shtml", "r") as tmplFile:
+            indexShtmlTemplate = tmplFile.read()
+        #print "Index shtml : ", indexShtmlTemplate                
+        self.indexShtml = indexShtmlTemplate
+        return self.indexShtml
+    

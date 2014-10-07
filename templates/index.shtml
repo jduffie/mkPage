@@ -1,0 +1,14 @@
+<html>
+
+
+<!-- header banner !-->
+<!--#include virtual="/header.html" -->
+
+<!-- CONTENT !-->
+<!--#include virtual="./body.html" -->
+<!--#include virtual="./map.html" -->
+
+<!--#include virtual="/footer.html" -->
+
+</BODY>
+</HTML>

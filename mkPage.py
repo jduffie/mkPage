@@ -8,10 +8,7 @@ import argparse
 import os
 from mkPage_cmn import *
 
-
-
-# 
-		
+	
 # build imageAttrs object for single image
 def buildImageAttributes(srcDir, imageFilename):
     imageAttributes = imageAttrs(srcDir, imageFilename)
@@ -23,13 +20,26 @@ def buildImageAttributesList(srcDir):
     print indTwo + "building image list ..."
 	# get a list of all images in the srcDir
 	# walk the list to build the imagAttrs objects
-    imageAttributesList = []
+    fileList = []
+
     for file in os.listdir(srcDir):  
         fileNoCase = file.upper()	
         if fileNoCase.endswith(".JPG"):
-            print indThree + "processing : " + file
-            imageAttributes = buildImageAttributes(srcDir, file)
-            imageAttributesList.append(imageAttributes)
+            print indThree + "found : " + file
+            if fileNoCase.find("WEB.JPG") >= 0:            
+                print indFour + "remove"
+                os.remove(srcDir +"/" + file)
+            elif fileNoCase.find("THUMB.JPG") >= 0:            
+                print indFour + "remove"
+                os.remove(srcDir +"/" + file)                
+            else:
+                print indFour + "add to list "
+                fileList.append(file)
+    imageAttributesList = []                
+    for file in fileList:  
+        print indThree + "processing: " + file
+        imageAttributes = buildImageAttributes(srcDir, file)
+        imageAttributesList.append(imageAttributes)                
     return imageAttributesList
 
 
@@ -52,6 +62,13 @@ def buildPageFiles(srcDir, pageAttributes):
     with open (srcDir + "/map.html", "w") as tmpFile:
         tmpFile.write(mapHtmlStr)		
         tmpFile.close()		
+    indexHtmlStr = view.buildIndex()
+    #print "Index shtml : ", indexHtmlStr    
+    with open (srcDir + "/index.shtml", "w") as tmpFile:
+
+        tmpFile.write(indexHtmlStr)		
+        tmpFile.close()		
+        
 
 def parseArgs(argv):
     parser = argparse.ArgumentParser()

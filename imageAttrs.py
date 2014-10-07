@@ -4,11 +4,8 @@ from pyexif import *
 from mkPage_cmn import *
 from PIL import ImageOps
 from math import floor
+import os
 
-#indOne = "    "
-#indTwo = indOne + indOne
-#indThree = indTwo + indOne
-#indFour = indThree + indOne
 
 class imageAttrs:
 
@@ -37,10 +34,11 @@ class imageAttrs:
         self.lat = get_lat(self.exif_data)   
         self.lon = get_lon(self.exif_data)   	
 				
-        print indFour + "Description : 	",  self.descr		
-        print indFour + "mod time    : 	", self.modTime
-        print indFour + "latitude    : ", self.lat
-        print indFour + "longitude   : ", self.lon
+        print indFive + "Filename    : 	",  imageFilename		
+        print indFive + "Description : 	",  self.descr		
+        print indFive + "mod time    : 	", self.modTime
+        print indFive + "latitude    : ", self.lat
+        print indFive + "longitude   : ", self.lon
 
 		
     def resizeImages(self, srcDir, imageFilename):
@@ -50,22 +48,28 @@ class imageAttrs:
         targetHeight = 480              
         newImg = self.resizeImage(imgFile, targetHeight, targetWidth)
         newFilename = imageFilename.rstrip(".JPG") + "_web.JPG"
-        newImg.save(srcDir + "/" + newFilename, format='JPEG')        
+        newFilenameFull = srcDir + "/" + newFilename
+        if os.path.isfile(newFilenameFull):
+            print indFive +  "artifact found : remove : ", newFilenameFull
+            os.remove(newFilenameFull)
+        newImg.save(newFilenameFull, format='JPEG')        
         self.webFile = newFilename
 
         targetWidth = 128
         targetHeight = 96              
         newImg = self.resizeImage(imgFile, targetHeight, targetWidth)
         newFilename = imageFilename.rstrip(".JPG") + "_thumb.JPG"
-        newImg.save(srcDir + "/" + newFilename, format='JPEG')
+        newFilenameFull = srcDir + "/" + newFilename
+        if os.path.isfile(newFilenameFull):
+            print indFive +  "artifact found : remove : ", newFilenameFull
+            os.remove(newFilenameFull)
+        newImg.save(newFilenameFull, format='JPEG')                
         self.thumbFile = newFilename
-        print "thumb :",  self.thumbFile
-        print "web   :",  self.webFile
 
     def resizeImage(self, imgFile, targetHeight, targetWidth):        
         img = Image.open(imgFile)
         width, height = img.size
-        print "width,height: ", width,height    
+        #print "width,height: ", width,height    
         dstWidth = width
         dstHeight = height
         
