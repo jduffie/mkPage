@@ -18,7 +18,7 @@ class pageView:
         picStr = ""
         for im in self.pageModel.imageModels:
             print "Img Descr : ", im.descr
-            picStr += imageLineTemplate.format(im.imgFile, im.descr)
+            picStr += imageLineTemplate.format(im.imgFile, im.webFile, im.descr)
 		
         pm = self.pageModel
         # write string into the body.html with header args

@@ -2,7 +2,8 @@ import json
 from epil import *
 from pyexif import *
 from mkPage_cmn import *
-
+from PIL import ImageOps
+from math import floor
 
 #indOne = "    "
 #indTwo = indOne + indOne
@@ -29,16 +30,57 @@ class imageAttrs:
             print indFour + "RuntimeError: for : " + imageFilename
             self.modTime = ""
             self.descr = ""
-	
+			
         image = Image.open(imgFile)
+        self.image = image
         self.exif_data = get_exif_data(image)        
         self.lat = get_lat(self.exif_data)   
-        self.lon = get_lon(self.exif_data)   		
-		
-        print indFour + "Description : 	" + self.descr		
+        self.lon = get_lon(self.exif_data)   	
+				
+        print indFour + "Description : 	",  self.descr		
         print indFour + "mod time    : 	", self.modTime
         print indFour + "latitude    : ", self.lat
         print indFour + "longitude   : ", self.lon
-        #get_field(image, "foo")
-        return
+
+		
+    def resizeImages(self, srcDir, imageFilename):
+        imgFile = srcDir + "/" + imageFilename        
+        
+        targetWidth = 640
+        targetHeight = 480              
+        newImg = self.resizeImage(imgFile, targetHeight, targetWidth)
+        newFilename = imageFilename.rstrip(".JPG") + "_web.JPG"
+        newImg.save(srcDir + "/" + newFilename, format='JPEG')        
+        self.webFile = newFilename
+
+        targetWidth = 128
+        targetHeight = 96              
+        newImg = self.resizeImage(imgFile, targetHeight, targetWidth)
+        newFilename = imageFilename.rstrip(".JPG") + "_thumb.JPG"
+        newImg.save(srcDir + "/" + newFilename, format='JPEG')
+        self.thumbFile = newFilename
+        print "thumb :",  self.thumbFile
+        print "web   :",  self.webFile
+
+    def resizeImage(self, imgFile, targetHeight, targetWidth):        
+        img = Image.open(imgFile)
+        width, height = img.size
+        print "width,height: ", width,height    
+        dstWidth = width
+        dstHeight = height
+        
+        if dstWidth > targetWidth:
+            ratio = float(targetWidth)/float(dstWidth)
+            dstWidth = targetWidth
+            dstHeight = int(ratio * dstHeight)
+
+        if dstHeight > targetHeight:
+            ratio = float(targetHeight)/float(dstHeight)
+            dstHeight = targetHeight
+            dstWidth = int(ratio * dstWidth)
+            
+        newImg = img.resize((dstWidth, dstHeight), Image.ANTIALIAS)
+        return newImg
+
+            
 		

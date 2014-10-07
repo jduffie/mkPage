@@ -15,6 +15,7 @@ from mkPage_cmn import *
 # build imageAttrs object for single image
 def buildImageAttributes(srcDir, imageFilename):
     imageAttributes = imageAttrs(srcDir, imageFilename)
+    imageAttributes.resizeImages(srcDir,imageFilename)
     return imageAttributes
 	
 # create a list of type imag  eAttrs
