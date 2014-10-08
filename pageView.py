@@ -32,17 +32,23 @@ class pageView:
         # build string containing the pic html
         with open (self.scriptDir + "/templates/pushpin.tmpl", "r") as tmplFile:
             pushpinTemplate = tmplFile.read()
-		
+
+        print pushpinTemplate
         ppStr = ""
         for im in self.pageModel.imageModels:
             #print "Img Descr : ", im.descr
-            ppStr += pushpinTemplate.format(im.imgFile, im.imgFile, im.lat, im.lon, im.descr)
+            #print "    imgFile : ", im.imgFile
+            #print "    lat : ", im.lat            
+            #print "    lon : ", im.lon
+            print "    var :", im.imgFile.rstrip(".JPG")
+            ppStr += pushpinTemplate.format(im.imgFile, im.imgFile, im.lat, im.lon, im.descr, im.imgFile.rstrip(".JPG"))
 		
         pm = self.pageModel
         # write string into the body.html with header args
         with open (self.scriptDir + "/templates/map.tmpl", "r") as tmplFile:
             mapTmpl = tmplFile.read()
-        self.mapHtml = mapTmpl.format(ppStr)		
+        latCenter,lonCenter = self.pageModel.imageCenter
+        self.mapHtml = mapTmpl.format(ppStr,latCenter,lonCenter)		
         #print self.mapHtml
         return self.mapHtml
         

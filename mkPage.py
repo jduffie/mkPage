@@ -39,7 +39,7 @@ def buildImageAttributesList(srcDir):
     for file in fileList:  
         print indThree + "processing: " + file
         imageAttributes = buildImageAttributes(srcDir, file)
-        imageAttributesList.append(imageAttributes)                
+        imageAttributesList.append(imageAttributes)
     return imageAttributesList
 
 
@@ -48,8 +48,10 @@ def buildPageAttributes(srcDir):
     jsonFile = open(srcDir + "/folder.json")
     pageAttributes = pageAttrs(jsonFile)
     imgModel = buildImageAttributesList(srcDir)
+    imgCenter = findCenter(imgModel)
     # TODO: append the list to the pageAttributes object
     pageAttributes.setImageModels(imgModel)
+    pageAttributes.setImageCenter(imgCenter)    
     return pageAttributes
 
 def buildPageFiles(srcDir, pageAttributes):	

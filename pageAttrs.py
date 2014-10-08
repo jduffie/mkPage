@@ -24,3 +24,9 @@ class pageAttrs:
 
     def getImageModels(self):
         return self.imageModels
+
+    def setImageCenter(self, imgCenter):
+        self.imageCenter = imgCenter
+
+    def getImageCenter(self):
+        return self.imageCenter

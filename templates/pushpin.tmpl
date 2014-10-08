@@ -1,5 +1,19 @@
-					// begin map entry  for {0}
-					var point = new GLatLng({2},{3});  
-					var marker = createMarker(point, '{4} <br><a href="{0}"><img src="{1}" width= 90 height= 120> <\/a>') 
-					map.addOverlay(marker);  			  
-					// end map entry  for {0}
+            // begin map entry  for {0}
+            var contentString{5} = '{4} <p><img SRC="./{5}_thumb.JPG"></p>';
+            var position{5} = new google.maps.LatLng({2},{3});
+                
+            var infowindow{5} = new google.maps.InfoWindow({{
+                content: contentString{5}
+            }});
+
+            var marker{5} = new google.maps.Marker({{
+                position: position{5},
+                title: '{4}',
+                map: map
+            }});
+
+            google.maps.event.addListener(marker{5}, 'click', function() {{
+                infowindow{5}.open(map,marker{5});
+            }});
+            // end map entry  for {0}
+

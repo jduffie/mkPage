@@ -6,6 +6,26 @@ from PIL import ImageOps
 from math import floor
 import os
 
+def findCenter(coords):
+    avgLat = 0
+    avgLon = 0
+    sumLat = 0
+    sumLon = 0
+    cnt = 0
+    for coord in coords:
+        if coord.lat and coord.lon:
+            sumLat = sumLat + coord.lat
+            sumLon = sumLon + coord.lon
+            cnt = cnt + 1
+            
+    if cnt > 0:
+        avgLat = sumLat / cnt
+        avgLon = sumLon / cnt 
+        
+    print "Avg Lon : ", avgLon
+    print "Avg Lat : ", avgLat
+    return avgLat,avgLon
+
 
 class imageAttrs:
 
@@ -85,6 +105,12 @@ class imageAttrs:
             
         newImg = img.resize((dstWidth, dstHeight), Image.ANTIALIAS)
         return newImg
+        
+            
+            
+            
+            
+            
 
             
 		
