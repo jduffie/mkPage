@@ -36,12 +36,13 @@ class pageView:
         print pushpinTemplate
         ppStr = ""
         for im in self.pageModel.imageModels:
-            #print "Img Descr : ", im.descr
-            #print "    imgFile : ", im.imgFile
-            #print "    lat : ", im.lat            
-            #print "    lon : ", im.lon
-            print "    var :", im.imgFile.rstrip(".JPG")
-            ppStr += pushpinTemplate.format(im.imgFile, im.imgFile, im.lat, im.lon, im.descr, im.imgFile.rstrip(".JPG"))
+            if im.lat and im.lon:
+                #print "Img Descr : ", im.descr
+                #print "    imgFile : ", im.imgFile
+                #print "    lat : ", im.lat            
+                #print "    lon : ", im.lon
+                print "    var :", im.imgFile.rstrip(".JPG")
+                ppStr += pushpinTemplate.format(im.imgFile, im.imgFile, im.lat, im.lon, im.descr, im.imgFile.rstrip(".JPG"))
 		
         pm = self.pageModel
         # write string into the body.html with header args
