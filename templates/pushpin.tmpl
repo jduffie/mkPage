@@ -1,7 +1,8 @@
-            // begin map entry  for {0}
+            // {0} map entry - START
             var contentString{5} = '{4} <p><img SRC="./{5}_thumb.JPG"></p>';
             var position{5} = new google.maps.LatLng({2},{3});
-                
+            bounds.extend(position{5});
+            
             var infowindow{5} = new google.maps.InfoWindow({{
                 content: contentString{5}
             }});
@@ -15,5 +16,5 @@
             google.maps.event.addListener(marker{5}, 'click', function() {{
                 infowindow{5}.open(map,marker{5});
             }});
-            // end map entry  for {0}
+            // {0} map entry - END
 

@@ -1,0 +1,30 @@
+<!-- Sat Map - START -->
+    <center>
+		<div id="ft_map">
+			<p>If any of the above pictures have been geotagged, then you should see pushpins marking the locations on the following map.  Note, you may need to zoom out or recenter to see the pushpins.</p>
+		</div>
+	   <div id="mapSat" style="width: 800px; height: 640px"></div>
+	</center>
+            
+    <script type="text/javascript">
+        function initialize() {{
+            var map = new google.maps.Map(
+                document.getElementById('mapSat'), {{
+                center: new google.maps.LatLng({1},{2}),
+                zoom: 17,
+                mapTypeId: google.maps.MapTypeId.HYBRID
+            }});
+            map.setTilt(45);
+            var bounds = new google.maps.LatLngBounds();
+
+            <!-- pushpins - START -->				
+		  
+{0}
+
+			<!-- pushpins - END -->
+            
+            map.fitBounds(bounds);
+        }}
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>            
+<!-- Sat Map - END -->

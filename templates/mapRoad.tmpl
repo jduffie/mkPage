@@ -1,0 +1,30 @@
+<!-- Road Map - START -->
+    <center>
+	   <div id="mapRoad" style="width: 800px; height: 640px"></div>
+	</center>
+            
+    <script type="text/javascript">
+        function initialize() {{
+            var map = new google.maps.Map(
+                document.getElementById('mapRoad'), {{
+                center: new google.maps.LatLng({1},{2}),
+                zoom: 17,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            }});
+            var bounds = new google.maps.LatLngBounds();
+
+            var kmlFileUrl = location.href + '/doc.kml';
+            var kmzLayer = new google.maps.KmlLayer(kmlFileUrl);
+            kmzLayer.setMap(map);
+
+            <!-- pushpins - START -->				
+		  
+{0}
+
+			<!-- pushpins - END -->
+            
+            map.fitBounds(bounds);
+        }}
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>            
+<!-- Road Map - END -->

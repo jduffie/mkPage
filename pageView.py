@@ -1,6 +1,7 @@
 
 from mkPage_cmn import *
 import os
+import re
 
 
 class pageView:
@@ -28,7 +29,21 @@ class pageView:
         return self.bodyHtml		
         #print self.bodyHtml
 		
-    def buildMap(self):	
+    def buildMap(self):	        
+        self.buildMapSat()   
+        # print " self.buildMapSat()   ", self.buildMapSat()   
+        self.buildMapRoad()    
+        # print " self.buildMapRoad()   ", self.buildMapRoad()           
+        pm = self.pageModel
+        # write string into the body.html with header args
+        with open (self.scriptDir + "/templates/map.tmpl", "r") as tmplFile:
+            mapTmpl = tmplFile.read()
+
+        self.mapHtml = mapTmpl.format(self.mapSatHtml, self.mapRoadHtml)		
+
+        return self.mapHtml
+        
+    def buildMapSat(self):	
         # build string containing the pic html
         with open (self.scriptDir + "/templates/pushpin.tmpl", "r") as tmplFile:
             pushpinTemplate = tmplFile.read()
@@ -41,17 +56,44 @@ class pageView:
                 #print "    imgFile : ", im.imgFile
                 #print "    lat : ", im.lat            
                 #print "    lon : ", im.lon
-                print "    var :", im.imgFile.rstrip(".JPG")
-                ppStr += pushpinTemplate.format(im.imgFile, im.imgFile, im.lat, im.lon, im.descr, im.imgFile.rstrip(".JPG"))
+                # strip all content from the period to end of line
+                imageVarSuffix = re.sub("\..*$", '', im.imgFile)
+                print "    suffix : ", imageVarSuffix
+                ppStr += pushpinTemplate.format(im.imgFile, im.imgFile, im.lat, im.lon, im.descr, imageVarSuffix)
 		
         pm = self.pageModel
         # write string into the body.html with header args
-        with open (self.scriptDir + "/templates/map.tmpl", "r") as tmplFile:
+        with open (self.scriptDir + "/templates/mapSat.tmpl", "r") as tmplFile:
             mapTmpl = tmplFile.read()
         latCenter,lonCenter = self.pageModel.imageCenter
-        self.mapHtml = mapTmpl.format(ppStr,latCenter,lonCenter)		
-        #print self.mapHtml
-        return self.mapHtml
+        self.mapSatHtml = mapTmpl.format(ppStr,latCenter,lonCenter)		
+        return self.mapSatHtml
+        
+    def buildMapRoad(self):	
+        # build string containing the pic html
+        with open (self.scriptDir + "/templates/pushpin.tmpl", "r") as tmplFile:
+            pushpinTemplate = tmplFile.read()
+
+        print pushpinTemplate
+        ppStr = ""
+        for im in self.pageModel.imageModels:
+            if im.lat and im.lon:
+                #print "Img Descr : ", im.descr
+                #print "    imgFile : ", im.imgFile
+                #print "    lat : ", im.lat            
+                #print "    lon : ", im.lon
+                # strip all content from the period to end of line
+                imageVarSuffix = re.sub("\..*$", '', im.imgFile)
+                print "    suffix : ", imageVarSuffix
+                ppStr += pushpinTemplate.format(im.imgFile, im.imgFile, im.lat, im.lon, im.descr, imageVarSuffix)
+		
+        pm = self.pageModel
+        # write string into the body.html with header args
+        with open (self.scriptDir + "/templates/mapRoad.tmpl", "r") as tmplFile:
+            mapTmpl = tmplFile.read()
+        latCenter,lonCenter = self.pageModel.imageCenter
+        self.mapRoadHtml = mapTmpl.format(ppStr,latCenter,lonCenter)		
+        return self.mapRoadHtml
         
     def buildIndex(self):
         # build string containing the pic html
