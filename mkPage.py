@@ -10,13 +10,13 @@ from mkPage_cmn import *
 
 	
 # build imageAttrs object for single image
-def buildImageAttributes(srcDir, imageFilename):
-    imageAttributes = imageAttrs(srcDir, imageFilename)
-    imageAttributes.resizeImages(srcDir,imageFilename)
-    return imageAttributes
+def buildImageModels(srcDir, imageFilename):
+    imageModels = imageAttrs(srcDir, imageFilename)
+    imageModels.resizeImages(srcDir,imageFilename)
+    return imageModels
 	
 # create a list of type imag  eAttrs
-def buildImageAttributesList(srcDir):
+def buildImageModelsList(srcDir):
     print indTwo + "building image list ..."
 	# get a list of all images in the srcDir
 	# walk the list to build the imagAttrs objects
@@ -35,14 +35,14 @@ def buildImageAttributesList(srcDir):
             else:
                 print indFour + "add to list "
                 fileList.append(file)
-    imageAttributesList = []                
+    imageModelsList = []                
     for file in fileList:  
         print indThree + "processing: " + file
-        imageAttributes = buildImageAttributes(srcDir, file)
-        imageAttributesList.append(imageAttributes)
-    return imageAttributesList
+        imageModels = buildImageModels(srcDir, file)
+        imageModelsList.append(imageModels)
+    return imageModelsList
 
-def buildRouteModelList(srcDir):
+def buildRouteModelsList(srcDir):
     print indTwo + "building route list ..."
 	# get a list of all kml files in the srcDir
     fileList = []
@@ -50,37 +50,38 @@ def buildRouteModelList(srcDir):
         fileNoCase = file.upper()	
         if fileNoCase.endswith(".KML"):
             fileList.append(file)
-            print indThree + "found : " + file            
-        
+            print indThree + "found : " + file                    
     return fileList
 
-def buildPageAttributes(srcDir):
+def buildPageModel(srcDir):
     print indTwo + "parse folder's json file ..."
     jsonFile = open(srcDir + "/folder.json")
-    pageAttributes = pageAttrs(jsonFile)
-    imgModel = buildImageAttributesList(srcDir)
+    pageModels = pageAttrs(jsonFile)
+    imgModel = buildImageModelsList(srcDir)
     imgCenter = findCenter(imgModel)
-    routeModel = buildRouteModelList(srcDir)
-    # TODO: append the list to the pageAttributes object
-    pageAttributes.setImageModels(imgModel)
-    pageAttributes.setImageCenter(imgCenter)    
-    pageAttributes.setRouteModels(routeModel)    
-    return pageAttributes
+    routeModel = buildRouteModelsList(srcDir)
+    # TODO: append the list to the pageModels object
+    pageModels.setImageModels(imgModel)
+    pageModels.setImageCenter(imgCenter)    
+    pageModels.setRouteModels(routeModel)    
+    return pageModels
 
-def buildPageFiles(srcDir, pageAttributes):	
-    view = pageView(pageAttributes)
+def buildPageFiles(srcDir, pageModels):	
+    view = pageView(pageModels)
+
     bodyHtmlStr = view.buildBody()
     with open (srcDir + "/body.html", "w") as tmpFile:
         tmpFile.write(bodyHtmlStr)	
         tmpFile.close()
+
     mapHtmlStr = view.buildMap()
     with open (srcDir + "/map.html", "w") as tmpFile:
         tmpFile.write(mapHtmlStr)		
         tmpFile.close()		
+        
     indexHtmlStr = view.buildIndex()
     #print "Index shtml : ", indexHtmlStr    
     with open (srcDir + "/index.shtml", "w") as tmpFile:
-
         tmpFile.write(indexHtmlStr)		
         tmpFile.close()		
         
@@ -97,8 +98,8 @@ def main(argv):
     args = parseArgs(argv)
     print indOne + "Input: "
     print indTwo + "src directory: " +  args.srcDir	
-    pageAttributes = buildPageAttributes(args.srcDir)
-    buildPageFiles(args.srcDir, pageAttributes)
+    pageModels = buildPageModel(args.srcDir)
+    buildPageFiles(args.srcDir, pageModels)
     
 
 

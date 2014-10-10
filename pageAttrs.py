@@ -26,7 +26,7 @@ class pageAttrs:
         return self.imageModels
 
     def setRouteModels(self, routeModels):
-        self.RouteModels = routeModels
+        self.routeModels = routeModels
 
     def getRouteModels(self):
         return self.routeModels
