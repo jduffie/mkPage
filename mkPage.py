@@ -8,6 +8,31 @@ import argparse
 import os
 from mkPage_cmn import *
 
+def buildSubDirFileList(topDir, suffix):
+    print indTwo + "Searching {0} for .{1} extension".format(topDir, suffix)
+    searchStr = '.' + suffix.upper()
+    filesList = []
+    for root, dirs, files in os.walk(topDir):
+        for file in files:            
+            fileNoCase = file.upper()	
+            # print indThree + "fileNoCase: " + fileNoCase + "extension: " + searchStr
+            if fileNoCase.endswith(searchStr):
+                print indThree + "found: " + os.path.join(root, file)
+                filesList.append(os.path.join(root, file))
+    return filesList
+
+def buildRouteModelsList(srcDir):
+    print indTwo + "building route list ..."
+	# get a list of all kml files in the srcDir
+    #fileList = []
+    #for file in os.listdir(srcDir):  
+    #    fileNoCase = file.upper()	
+    #    if fileNoCase.endswith(".KML"):
+    #        fileList.append(file)
+    #        print indThree + "found : " + file                    
+    fileList = buildSubDirFileList(srcDir, "kml")
+    return fileList
+    
 	
 # build imageAttrs object for single image
 def buildImageModels(srcDir, imageFilename):
@@ -42,33 +67,36 @@ def buildImageModelsList(srcDir):
         imageModelsList.append(imageModels)
     return imageModelsList
 
-def buildRouteModelsList(srcDir):
-    print indTwo + "building route list ..."
-	# get a list of all kml files in the srcDir
-    fileList = []
-    for file in os.listdir(srcDir):  
-        fileNoCase = file.upper()	
-        if fileNoCase.endswith(".KML"):
-            fileList.append(file)
-            print indThree + "found : " + file                    
-    return fileList
+
+def buildSubPageModel(srcDir):
+    subPageModel = None
+    return subPageModel
 
 def buildPageModel(srcDir):
     print indTwo + "parse folder's json file ..."
     jsonFile = open(srcDir + "/folder.json")
     pageModels = pageAttrs(jsonFile)
     imgModel = buildImageModelsList(srcDir)
+    #kmlFilesList = buildKmlFileList(srcDir)
     imgCenter = findCenter(imgModel)
     routeModel = buildRouteModelsList(srcDir)
+    subPageModel = buildSubPageModel(srcDir)
     # TODO: append the list to the pageModels object
     pageModels.setImageModels(imgModel)
     pageModels.setImageCenter(imgCenter)    
     pageModels.setRouteModels(routeModel)    
+    pageModels.setSubPageModel(subPageModel)    
     return pageModels
-
+    
+             
 def buildPageFiles(srcDir, pageModels):	
     view = pageView(pageModels)
 
+    headMainMenuHtmlStr = view.buildHeadMainColumn()
+    with open (srcDir + "/headMainColumn.html", "w") as tmpFile:    
+        tmpFile.write(headMainMenuHtmlStr)	
+        tmpFile.close()
+    
     bodyHtmlStr = view.buildBody()
     with open (srcDir + "/body.html", "w") as tmpFile:
         tmpFile.write(bodyHtmlStr)	
@@ -78,6 +106,16 @@ def buildPageFiles(srcDir, pageModels):
     with open (srcDir + "/map.html", "w") as tmpFile:
         tmpFile.write(mapHtmlStr)		
         tmpFile.close()		
+        
+    sideMenuHtmlStr = view.buildSideMenu()
+    with open (srcDir + "/sideMenu.html", "w") as tmpFile:
+        tmpFile.write(sideMenuHtmlStr)		
+        tmpFile.close()		
+        
+    tailMainMenuHtmlStr = view.buildTailMainColumn()
+    with open (srcDir + "/tailMainColumn.html", "w") as tmpFile:    
+        tmpFile.write(tailMainMenuHtmlStr)	
+        tmpFile.close()
         
     indexHtmlStr = view.buildIndex()
     #print "Index shtml : ", indexHtmlStr    

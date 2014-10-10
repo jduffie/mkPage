@@ -36,23 +36,24 @@ class pageView:
             bodyTmpl = tmplFile.read()
         self.bodyHtml = bodyTmpl.format(pm.title, pm.date, pm.location, pm.description, picStr)		
         return self.bodyHtml		
-        #print self.bodyHtml
+
+
 		
     def buildMap(self):	        
+        self.mapSatHtml = ""
         if self.pageModel.imageModels:
-            self.buildMapSat()
-        else:
-            self.mapSatHtml = ""
-        # print " self.buildMapSat()   ", self.buildMapSat()   
-        self.buildMapRoad()    
-        # print " self.buildMapRoad()   ", self.buildMapRoad()           
+            self.mapSatHtml = self.buildMapSat()
+            
+        self.mapRouteHtml = ""                    
+        if self.pageModel.routeModels:
+            self.mapRouteHtml = self.buildMapRoute()
+                                
         pm = self.pageModel
-        # write string into the body.html with header args
         
-        if self.mapSatHtml != "" or self.mapRoadHtml != "":
+        if self.mapSatHtml != "" or self.mapRouteHtml != "":
             with open (self.scriptDir + "/templates/map.tmpl", "r") as tmplFile:
                 mapTmpl = tmplFile.read()
-            self.mapHtml = mapTmpl.format(self.mapSatHtml, self.mapRoadHtml)		
+            self.mapHtml = mapTmpl.format(self.mapSatHtml, self.mapRouteHtml)		
         else:
             self.mapHtml = ""
         return self.mapHtml
@@ -85,11 +86,11 @@ class pageView:
         with open (self.scriptDir + "/templates/mapSat.tmpl", "r") as tmplFile:
             mapTmpl = tmplFile.read()
         latCenter,lonCenter = self.pageModel.imageCenter
-        self.mapSatHtml = mapTmpl.format(ppStr,latCenter,lonCenter)		
-        return self.mapSatHtml
+        mapSatHtml = mapTmpl.format(ppStr,latCenter,lonCenter)		
+        return mapSatHtml
 
         
-    def buildMapRoad(self):	
+    def buildMapRoute(self):	
         with open (self.scriptDir + "/templates/route.tmpl", "r") as tmplFile:
             routeTemplate = tmplFile.read()
 
@@ -108,13 +109,37 @@ class pageView:
         with open (self.scriptDir + "/templates/mapRoad.tmpl", "r") as tmplFile:
             mapTmpl = tmplFile.read()
         latCenter,lonCenter = self.pageModel.imageCenter
-        self.mapRoadHtml = mapTmpl.format(ppStr,latCenter,lonCenter, rtStr)		
-        return self.mapRoadHtml
+        mapRoadHtml = mapTmpl.format(ppStr,latCenter,lonCenter, rtStr)		
+        return mapRoadHtml
+
+    def buildTailMainColumn(self):	
+        with open (self.scriptDir + "/templates/tailMainColumn.tmpl", "r") as tmplFile:
+            tailMainColumnHtml = tmplFile.read()
+        return tailMainColumnHtml
+
+    def buildHeadMainColumn(self):	
+        with open (self.scriptDir + "/templates/headMainColumn.tmpl", "r") as tmplFile:
+            headMainColumnHtml = tmplFile.read()
+        return headMainColumnHtml
+        
+    def buildSideMenu(self):	    
+        sideMenuItems = ""        
+        if self.pageModel.subPages != None:    
+            with open (self.scriptDir + "/templates/sideMenuItem.tmpl", "r") as tmplFile:
+                sideMenuItemTmpl = tmplFile.read()	       
+            for subPage in self.pageModel.subPages:
+                sideMenuItems += sideMenuItemTmpl.format(pm.title, pm.subdir, pm.description)		
+		
+        sideMenuHtml = ""
+        with open (self.scriptDir + "/templates/sideMenu.tmpl", "r") as tmplFile:
+            sideMenuTmpl = tmplFile.read()
+        sideMenuHtml = sideMenuTmpl.format(sideMenuItems)		
+        return sideMenuHtml
 
         
     def buildIndex(self):
         # build string containing the pic html
-        with open (self.scriptDir + "/templates/index.shtml", "r") as tmplFile:
+        with open (self.scriptDir + "/templates/index.tmpl", "r") as tmplFile:
             indexShtmlTemplate = tmplFile.read()
         #print "Index shtml : ", indexShtmlTemplate                
         self.indexShtml = indexShtmlTemplate

@@ -36,3 +36,6 @@ class pageAttrs:
 
     def getImageCenter(self):
         return self.imageCenter
+        
+    def setSubPageModel(self, subPages):
+        self.subPages = subPages
