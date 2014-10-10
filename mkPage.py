@@ -42,6 +42,17 @@ def buildImageAttributesList(srcDir):
         imageAttributesList.append(imageAttributes)
     return imageAttributesList
 
+def buildRouteModelList(srcDir):
+    print indTwo + "building route list ..."
+	# get a list of all kml files in the srcDir
+    fileList = []
+    for file in os.listdir(srcDir):  
+        fileNoCase = file.upper()	
+        if fileNoCase.endswith(".KML"):
+            fileList.append(file)
+            print indThree + "found : " + file            
+        
+    return fileList
 
 def buildPageAttributes(srcDir):
     print indTwo + "parse folder's json file ..."
@@ -49,9 +60,11 @@ def buildPageAttributes(srcDir):
     pageAttributes = pageAttrs(jsonFile)
     imgModel = buildImageAttributesList(srcDir)
     imgCenter = findCenter(imgModel)
+    routeModel = buildRouteModelList(srcDir)
     # TODO: append the list to the pageAttributes object
     pageAttributes.setImageModels(imgModel)
     pageAttributes.setImageCenter(imgCenter)    
+    pageAttributes.setRouteModels(routeModel)    
     return pageAttributes
 
 def buildPageFiles(srcDir, pageAttributes):	

@@ -30,17 +30,22 @@ class pageView:
         #print self.bodyHtml
 		
     def buildMap(self):	        
-        self.buildMapSat()   
+        if self.pageModel.imageModels:
+            self.buildMapSat()
+        else:
+            self.mapSatHtml = ""
         # print " self.buildMapSat()   ", self.buildMapSat()   
         self.buildMapRoad()    
         # print " self.buildMapRoad()   ", self.buildMapRoad()           
         pm = self.pageModel
         # write string into the body.html with header args
-        with open (self.scriptDir + "/templates/map.tmpl", "r") as tmplFile:
-            mapTmpl = tmplFile.read()
-
-        self.mapHtml = mapTmpl.format(self.mapSatHtml, self.mapRoadHtml)		
-
+        
+        if self.mapSatHtml != "" or self.mapRoadHtml != "":
+            with open (self.scriptDir + "/templates/map.tmpl", "r") as tmplFile:
+                mapTmpl = tmplFile.read()
+            self.mapHtml = mapTmpl.format(self.mapSatHtml, self.mapRoadHtml)		
+        else:
+            self.mapHtml = ""
         return self.mapHtml
         
     def buildMapSat(self):	

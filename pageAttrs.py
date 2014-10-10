@@ -25,6 +25,12 @@ class pageAttrs:
     def getImageModels(self):
         return self.imageModels
 
+    def setRouteModels(self, routeModels):
+        self.RouteModels = routeModels
+
+    def getRouteModels(self):
+        return self.routeModels
+
     def setImageCenter(self, imgCenter):
         self.imageCenter = imgCenter
 
