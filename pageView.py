@@ -125,10 +125,12 @@ class pageView:
     def buildSideMenu(self):	    
         sideMenuItems = ""        
         if self.pageModel.subPages != None:    
+            
             with open (self.scriptDir + "/templates/sideMenuItem.tmpl", "r") as tmplFile:
                 sideMenuItemTmpl = tmplFile.read()	       
-            for subPage in self.pageModel.subPages:
-                sideMenuItems += sideMenuItemTmpl.format(pm.title, pm.subdir, pm.description)		
+            for pm in self.pageModel.subPages:
+                print indTwo + "sideMenuItem: ", pm.title
+                sideMenuItems += sideMenuItemTmpl.format(pm.title, pm.description, pm.subdir)		
 		
         sideMenuHtml = ""
         with open (self.scriptDir + "/templates/sideMenu.tmpl", "r") as tmplFile:

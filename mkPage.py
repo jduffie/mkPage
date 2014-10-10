@@ -10,30 +10,34 @@ from mkPage_cmn import *
 
 def buildSubDirFileList(topDir, suffix):
     print indTwo + "Searching {0} for .{1} extension".format(topDir, suffix)
-    searchStr = '.' + suffix.upper()
+    searchStr = "." + suffix.upper()
     filesList = []
     for root, dirs, files in os.walk(topDir):
         for file in files:            
             fileNoCase = file.upper()	
-            # print indThree + "fileNoCase: " + fileNoCase + "extension: " + searchStr
+            #print indThree + "file : " + file
             if fileNoCase.endswith(searchStr):
-                print indThree + "found: " + os.path.join(root, file)
+                print indThree + "found: ", os.path.join(root, file)
                 filesList.append(os.path.join(root, file))
     return filesList
 
 def buildRouteModelsList(srcDir):
     print indTwo + "building route list ..."
-	# get a list of all kml files in the srcDir
-    #fileList = []
-    #for file in os.listdir(srcDir):  
-    #    fileNoCase = file.upper()	
-    #    if fileNoCase.endswith(".KML"):
-    #        fileList.append(file)
-    #        print indThree + "found : " + file                    
     fileList = buildSubDirFileList(srcDir, "kml")
     return fileList
+
+def buildNestedFoldersMdList(srcDir):
+    print indTwo + "building list for folder meta data for nested folders ..."
+    fileList = []    
+    jsonFileList = buildSubDirFileList(srcDir, "json")
+    for file in jsonFileList:
+        if "folder.json" in file :
+            print indThree + "adding mdFile : ", file
+            fileList.append(file)
+    return fileList
+
+
     
-	
 # build imageAttrs object for single image
 def buildImageModels(srcDir, imageFilename):
     imageModels = imageAttrs(srcDir, imageFilename)
@@ -69,13 +73,19 @@ def buildImageModelsList(srcDir):
 
 
 def buildSubPageModel(srcDir):
-    subPageModel = None
-    return subPageModel
+    subPageModelList = []
+    mdFileList = buildNestedFoldersMdList(srcDir)
+    for mdFile in mdFileList:
+        print indTwo + "mdFile : ", mdFile
+        pageModel =  pageAttrs(mdFile)
+        subPageModelList.append(pageModel)
+        print indTwo + "appending : ", pageModel
+    return subPageModelList
 
 def buildPageModel(srcDir):
     print indTwo + "parse folder's json file ..."
-    jsonFile = open(srcDir + "/folder.json")
-    pageModels = pageAttrs(jsonFile)
+    jsonFileName = srcDir + "/folder.json"
+    pageModels = pageAttrs(jsonFileName)
     imgModel = buildImageModelsList(srcDir)
     #kmlFilesList = buildKmlFileList(srcDir)
     imgCenter = findCenter(imgModel)
