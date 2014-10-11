@@ -42,6 +42,8 @@ class imageAttrs:
             #print indFour + "description : " , exifEditor.getTag("Description")
             self.modTime = exifEditor.getModificationDateTime()
             self.descr = exifEditor.getTag("Description")
+            if self.descr == None:
+                self.descr = ""
 
         except RuntimeError:
             print indFour + "RuntimeError: for : " + imageFilename

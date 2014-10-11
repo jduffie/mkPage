@@ -1,6 +1,7 @@
 import json
 import os
 
+
 indOne = "    "
 indTwo = indOne + indOne
 indThree = indTwo + indOne
@@ -11,8 +12,9 @@ class pageAttrs:
         self.data = []
         jsonFile = open(jsonFileName)
         self.jsonFile = jsonFile
-        print "new json file ", jsonFile
+        #print "new json file ", jsonFile
         jsonDict = json.load(jsonFile)
+        #print json.dumps(jsonDict)
         self.title = jsonDict["title"]
         self.description = jsonDict["description"]
         self.location = jsonDict["location"]
@@ -43,3 +45,5 @@ class pageAttrs:
         
     def setSubPageModel(self, subPages):
         self.subPages = subPages
+        
+        

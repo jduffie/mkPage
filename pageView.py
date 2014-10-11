@@ -11,6 +11,28 @@ class pageView:
         self.data = []
         self.pageModel = pageModel
 
+        
+    def prepStrForJscript(self, src):
+        dst = ""
+        if src != None:
+            dst = src.replace("'", "\\'");
+            dst = dst.replace('"', '\\"');            
+        return dst
+        
+    def linkifyString(self, src):
+        if src == None:
+            dst = ""
+        else:            
+            # replace html with links
+            strList = src.split()
+            dst = ""
+            for strElem in strList:
+                if "http://" in strElem:
+                    strElem = '<a href="' + strElem + '">' + strElem + '</a>'
+                dst += strElem + " "                                
+        print indTwo + "linkifyString : ", dst
+        return dst
+        
     def buildBody(self):	
         # build string containing the pic html
         with open (self.scriptDir + "/templates/pic_line.tmpl", "r") as tmplFile:
@@ -18,17 +40,10 @@ class pageView:
 		
         picStr = ""
         for im in self.pageModel.imageModels:
-            print "Img Descr : ", im.descr
-            caption = ""
-            if im.descr != None:
-                strList = im.descr.split()
-                for strElem in strList:
-                    if "http://" in strElem:
-                        strElem = '<a href="' + strElem + '">' + strElem + '</a>'
-                    caption += strElem + " "
-            else :
-                caption = ""
-            picStr += imageLineTemplate.format(im.imgFile, im.webFile, caption)
+            print indTwo + "Img Descr : ", im.descr
+            strClean = self.linkifyString(im.descr)
+            print indTwo + "strClean : ", strClean
+            picStr += imageLineTemplate.format(im.imgFile, im.webFile, strClean)
 		
         pm = self.pageModel
         # write string into the body.html with header args
@@ -74,7 +89,9 @@ class pageView:
                 # strip all content from the period to end of line
                 imageVarSuffix = re.sub("\..*$", '', im.imgFile)
                 print "    suffix : ", imageVarSuffix
-                ppStr += pushpinTemplate.format(imageVarSuffix, im.lat, im.lon, im.descr)
+                caption = self.prepStrForJscript(im.descr)                
+                caption = self.linkifyString(caption)
+                ppStr += pushpinTemplate.format(imageVarSuffix, im.lat, im.lon, caption)
         return ppStr
 
         
@@ -129,8 +146,9 @@ class pageView:
             with open (self.scriptDir + "/templates/sideMenuItem.tmpl", "r") as tmplFile:
                 sideMenuItemTmpl = tmplFile.read()	       
             for pm in self.pageModel.subPages:
-                print indTwo + "sideMenuItem: ", pm.title
-                sideMenuItems += sideMenuItemTmpl.format(pm.title, pm.description, pm.subdir)		
+                if pm.subdir != ".":
+                    print indTwo + "sideMenuItem: ", pm.title, " ", pm.subdir
+                    sideMenuItems += sideMenuItemTmpl.format(pm.title, pm.description, pm.subdir)		
 		
         sideMenuHtml = ""
         with open (self.scriptDir + "/templates/sideMenu.tmpl", "r") as tmplFile:

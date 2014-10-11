@@ -86,6 +86,7 @@ def buildPageModel(srcDir):
     print indTwo + "parse folder's json file ..."
     jsonFileName = srcDir + "/folder.json"
     pageModels = pageAttrs(jsonFileName)
+
     imgModel = buildImageModelsList(srcDir)
     #kmlFilesList = buildKmlFileList(srcDir)
     imgCenter = findCenter(imgModel)
@@ -95,7 +96,7 @@ def buildPageModel(srcDir):
     pageModels.setImageModels(imgModel)
     pageModels.setImageCenter(imgCenter)    
     pageModels.setRouteModels(routeModel)    
-    pageModels.setSubPageModel(subPageModel)    
+    pageModels.setSubPageModel(subPageModel)   
     return pageModels
     
              
