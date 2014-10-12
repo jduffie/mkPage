@@ -1,10 +1,6 @@
 import json
 import os
-
-
-indOne = "    "
-indTwo = indOne + indOne
-indThree = indTwo + indOne
+from mkPage_cmn import *
 
 class pageAttrs:
 
@@ -20,30 +16,26 @@ class pageAttrs:
         self.location = jsonDict["location"]
         self.date = jsonDict["date"]
         self.subdir = os.path.dirname(jsonFileName)
-        print indThree + self.description		
-        print indThree + self.location
-        print indThree + self.date
+        print indFour + self.title		
+        #print indThree + self.location
+        #print indThree + self.date
         return
 
     def setImageModels(self, imgModels):
         self.imageModels = imgModels
 
-    def getImageModels(self):
-        return self.imageModels
-
     def setRouteModels(self, routeModels):
         self.routeModels = routeModels
 
-    def getRouteModels(self):
-        return self.routeModels
-
     def setImageCenter(self, imgCenter):
         self.imageCenter = imgCenter
-
-    def getImageCenter(self):
-        return self.imageCenter
         
     def setSubPageModel(self, subPages):
         self.subPages = subPages
+        
+    def setParentPageModel(self, parent):
+        self.parentPageModel = parent
+        
+        
         
         

@@ -8,7 +8,8 @@ import argparse
 import os
 from mkPage_cmn import *
 
-def buildSubDirFileList(topDir, suffix):
+# recursively search subdirs for instances of a file with given suffix 
+def buildAllSubDirFileList(topDir, suffix):
     print indTwo + "Searching {0} for .{1} extension".format(topDir, suffix)
     searchStr = "." + suffix.upper()
     filesList = []
@@ -21,22 +22,42 @@ def buildSubDirFileList(topDir, suffix):
                 filesList.append(os.path.join(root, file))
     return filesList
 
-def buildRouteModelsList(srcDir):
-    print indTwo + "building route list ..."
-    fileList = buildSubDirFileList(srcDir, "kml")
-    return fileList
+# search all immediate subdirs for instances of a file with given filename
+def buildSubDirFileList(topDir, fileName):
+    print indTwo + "Searching {0} for .{1} extension".format(topDir, fileName)
+    filesList = []
+    for dir in os.walk(topDir).next()[1]:
+        testFile = dir + "/" + fileName
+        if os.path.isfile(testFile):
+            filesList.append(testFile)
+    return filesList
 
 def buildNestedFoldersMdList(srcDir):
     print indTwo + "building list for folder meta data for nested folders ..."
     fileList = []    
-    jsonFileList = buildSubDirFileList(srcDir, "json")
+    jsonFileList = buildSubDirFileList(srcDir, "folder.json")
     for file in jsonFileList:
         if "folder.json" in file :
             print indThree + "adding mdFile : ", file
             fileList.append(file)
     return fileList
 
+def buildSubPageModel(srcDir):
+    subPageModelList = []
+    mdFileList = buildSubDirFileList(srcDir, "folder.json")
+    for mdFile in mdFileList:
+        pageModel =  pageAttrs(mdFile)
+        subPageModelList.append(pageModel)
+        print indTwo + "appending : ", pageModel.title
+    return subPageModelList
 
+def buildParentPageModel(srcDir):
+    testFile = srcDir + "/../folder.json"
+    pageModel = None
+    if os.path.isfile(testFile):
+        pageModel =  pageAttrs(testFile)
+    return pageModel
+    
     
 # build imageAttrs object for single image
 def buildImageModels(srcDir, imageFilename):
@@ -71,16 +92,11 @@ def buildImageModelsList(srcDir):
         imageModelsList.append(imageModels)
     return imageModelsList
 
+def buildRouteModelsList(srcDir):
+    print indTwo + "building route list ..."
+    fileList = buildAllSubDirFileList(srcDir, "kml")
+    return fileList
 
-def buildSubPageModel(srcDir):
-    subPageModelList = []
-    mdFileList = buildNestedFoldersMdList(srcDir)
-    for mdFile in mdFileList:
-        print indTwo + "mdFile : ", mdFile
-        pageModel =  pageAttrs(mdFile)
-        subPageModelList.append(pageModel)
-        print indTwo + "appending : ", pageModel
-    return subPageModelList
 
 def buildPageModel(srcDir):
     print indTwo + "parse folder's json file ..."
@@ -88,15 +104,20 @@ def buildPageModel(srcDir):
     pageModels = pageAttrs(jsonFileName)
 
     imgModel = buildImageModelsList(srcDir)
-    #kmlFilesList = buildKmlFileList(srcDir)
-    imgCenter = findCenter(imgModel)
-    routeModel = buildRouteModelsList(srcDir)
-    subPageModel = buildSubPageModel(srcDir)
-    # TODO: append the list to the pageModels object
     pageModels.setImageModels(imgModel)
+    
+    imgCenter = findCenter(imgModel)
     pageModels.setImageCenter(imgCenter)    
+    
+    routeModel = buildRouteModelsList(srcDir)
     pageModels.setRouteModels(routeModel)    
+    
+    subPageModel = buildSubPageModel(srcDir)
     pageModels.setSubPageModel(subPageModel)   
+
+    parentPageModel = buildParentPageModel(srcDir)
+    pageModels.setParentPageModel(parentPageModel)   
+
     return pageModels
     
              

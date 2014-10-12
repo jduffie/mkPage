@@ -55,17 +55,20 @@ class pageView:
 
 		
     def buildMap(self):	        
+        print indTwo + "buildMap: sat"
         self.mapSatHtml = ""
         if self.pageModel.imageModels:
             self.mapSatHtml = self.buildMapSat()
             
-        self.mapRouteHtml = ""                    
+        print indTwo + "buildMap: route"
+        self.mapRouteHtml = ""                            
         if self.pageModel.routeModels:
             self.mapRouteHtml = self.buildMapRoute()
                                 
         pm = self.pageModel
         
         if self.mapSatHtml != "" or self.mapRouteHtml != "":
+            print indTwo + "buildMap: writing map html"
             with open (self.scriptDir + "/templates/map.tmpl", "r") as tmplFile:
                 mapTmpl = tmplFile.read()
             self.mapHtml = mapTmpl.format(self.mapSatHtml, self.mapRouteHtml)		

@@ -22,8 +22,8 @@ def findCenter(coords):
         avgLat = sumLat / cnt
         avgLon = sumLon / cnt 
         
-    print "Avg Lon : ", avgLon
-    print "Avg Lat : ", avgLat
+    print indThree + "Avg Lon : ", avgLon
+    print indThree + "Avg Lat : ", avgLat
     return avgLat,avgLon
 
 
