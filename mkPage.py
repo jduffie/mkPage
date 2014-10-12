@@ -55,6 +55,7 @@ def buildParentPageModel(srcDir):
     testFile = srcDir + "/../folder.json"
     pageModel = None
     if os.path.isfile(testFile):
+        print indTwo + "adding parent mdFile : ", testFile
         pageModel =  pageAttrs(testFile)
     return pageModel
     

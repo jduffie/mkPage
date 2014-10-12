@@ -143,7 +143,7 @@ class pageView:
         return headMainColumnHtml
         
     def buildSideMenu(self):	    
-        sideMenuItems = ""        
+        sideMenuItems = ""                
         if self.pageModel.subPages != None:    
             
             with open (self.scriptDir + "/templates/sideMenuItem.tmpl", "r") as tmplFile:
@@ -152,11 +152,20 @@ class pageView:
                 if pm.subdir != ".":
                     print indTwo + "sideMenuItem: ", pm.title, " ", pm.subdir
                     sideMenuItems += sideMenuItemTmpl.format(pm.title, pm.description, pm.subdir)		
-		
+
+        sideMenuBack = ""                
+        if self.pageModel.parentPageModel:
+            pm = self.pageModel.parentPageModel
+            print indTwo + "parentPageModel: title " + pm.title
+            with open (self.scriptDir + "/templates/sideMenuBack.tmpl", "r") as tmplFile:
+                sideMenuBackTmpl = tmplFile.read()	       
+            sideMenuBack = sideMenuBackTmpl.format(pm.title, pm.description, pm.subdir)		
+            print indTwo + "sideMenuBack " + sideMenuBack
+                
         sideMenuHtml = ""
         with open (self.scriptDir + "/templates/sideMenu.tmpl", "r") as tmplFile:
             sideMenuTmpl = tmplFile.read()
-        sideMenuHtml = sideMenuTmpl.format(sideMenuItems)		
+        sideMenuHtml = sideMenuTmpl.format(sideMenuItems, sideMenuBack)		
         return sideMenuHtml
 
         
