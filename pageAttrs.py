@@ -8,7 +8,7 @@ class pageAttrs:
         self.data = []
         jsonFile = open(jsonFileName)
         self.jsonFile = jsonFile
-        #print "new json file ", jsonFile
+        print "new json file ", jsonFile
         jsonDict = json.load(jsonFile)
         #print json.dumps(jsonDict)
         self.title = jsonDict["title"]
