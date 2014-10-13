@@ -16,7 +16,7 @@ class pageView:
         dst = ""
         if src != None:
             dst = src.replace("'", "\\'");
-            dst = dst.replace('"', '\\"');            
+            dst = dst.replace('"', '\\"');
         return dst
         
     def linkifyString(self, src):
@@ -91,6 +91,8 @@ class pageView:
                 #print "    lon : ", im.lon
                 # strip all content from the period to end of line
                 imageVarSuffix = re.sub("\..*$", '', im.imgFile)
+                imageVarSuffix = imageVarSuffix.replace("-", "_");
+                imageVarSuffix = imageVarSuffix.replace(" ", "_");
                 print "    suffix : ", imageVarSuffix
                 caption = self.prepStrForJscript(im.descr)                
                 caption = self.linkifyString(caption)
@@ -118,7 +120,9 @@ class pageView:
         rtStr = ""
         for rtFile in self.pageModel.routeModels:
                 # strip all content from the period to end of line
-                rtVarSuffix = re.sub("\..*$", '', rtFile)
+                rtVarSuffix = re.sub("\..*$", '', rtFile)                               
+                rtVarSuffix = rtVarSuffix.replace("-", "_");
+                rtVarSuffix = rtVarSuffix.replace(" ", "_");
                 #print "    suffix : ", rtVarSuffix
                 rtStr += routeTemplate.format(rtVarSuffix, rtFile)
     

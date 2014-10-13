@@ -69,7 +69,8 @@ class imageAttrs:
         targetWidth = 640
         targetHeight = 480              
         newImg = self.resizeImage(imgFile, targetHeight, targetWidth)
-        newFilename = imageFilename.rstrip(".JPG") + "_web.JPG"
+                
+        newFilename = imageFilename.rstrip(".JPG") + "_web.JPG"            
         newFilenameFull = srcDir + "/" + newFilename
         if os.path.isfile(newFilenameFull):
             print indFive +  "artifact found : remove : ", newFilenameFull

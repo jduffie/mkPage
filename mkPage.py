@@ -8,6 +8,20 @@ import argparse
 import os
 from mkPage_cmn import *
 
+# if file has spaces, dashes, etc move to new name
+def saneFile(srcDir, srcFilename):
+    dstFilename = srcFilename
+    dstFilename = dstFilename.replace("-", "_")
+    dstFilename = dstFilename.replace(" ", "_")
+    dstFilename = dstFilename.replace(".jpg", ".JPG")
+    dstFilename = dstFilename.replace(".jpeg", ".JPG")
+    dstFilename = dstFilename.replace(".JPEG", ".JPG")
+    if srcFilename != dstFilename:
+        oldName = srcDir + '/' + srcFilename
+        newName = srcDir + '/' + dstFilename
+        os.rename(oldName, newName)
+    return dstFilename
+
 # recursively search subdirs for instances of a file with given suffix 
 def buildAllSubDirFileList(topDir, suffix):
     print indTwo + "Searching {0} for .{1} extension".format(topDir, suffix)
@@ -85,9 +99,11 @@ def buildImageModelsList(srcDir):
                 os.remove(srcDir +"/" + file)                
             else:
                 print indFour + "add to list "
+                file = saneFile(srcDir, file)
                 fileList.append(file)
     imageModelsList = []                
     for file in fileList:  
+        
         print indThree + "processing: " + file
         imageModels = buildImageModels(srcDir, file)
         imageModelsList.append(imageModels)
