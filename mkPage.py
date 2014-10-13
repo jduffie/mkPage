@@ -16,6 +16,7 @@ def saneFile(srcDir, srcFilename):
     dstFilename = dstFilename.replace(".jpg", ".JPG")
     dstFilename = dstFilename.replace(".jpeg", ".JPG")
     dstFilename = dstFilename.replace(".JPEG", ".JPG")
+    dstFilename = dstFilename.replace(".KML", ".kml")
     if srcFilename != dstFilename:
         oldName = srcDir + '/' + srcFilename
         newName = srcDir + '/' + dstFilename
