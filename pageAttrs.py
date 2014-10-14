@@ -23,6 +23,8 @@ class pageAttrs:
 
     def setImageModels(self, imgModels):
         self.imageModels = imgModels
+        for im in imgModels:
+            print im
 
     def setRouteModels(self, routeModels):
         self.routeModels = routeModels

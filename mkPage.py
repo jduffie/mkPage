@@ -1,6 +1,7 @@
 from epil import *
 import sys
 from pageAttrs import *
+from imageSet import *
 from imageAttrs import *
 from pageView import *
 import argparse
@@ -80,35 +81,40 @@ def buildImageModels(srcDir, imageFilename):
     imageModels = imageAttrs(srcDir, imageFilename)
     imageModels.resizeImages(srcDir,imageFilename)
     return imageModels
-	
+
 # create a list of type imag  eAttrs
-def buildImageModelsList(srcDir):
+def buildImageModelList(srcDir):
     print indTwo + "building image list ..."
-	# get a list of all images in the srcDir
-	# walk the list to build the imagAttrs objects
+        # get a list of all images in the srcDir
+        # walk the list to build the imagAttrs objects
     fileList = []
 
-    for file in os.listdir(srcDir):  
-        fileNoCase = file.upper()	
+    for file in os.listdir(srcDir):
+        fileNoCase = file.upper()
         if fileNoCase.endswith(".JPG"):
             print indThree + "found : " + file
-            if fileNoCase.find("WEB.JPG") >= 0:            
-                print indFour + "remove"
-                os.remove(srcDir +"/" + file)
-            elif fileNoCase.find("THUMB.JPG") >= 0:            
-                print indFour + "remove"
-                os.remove(srcDir +"/" + file)                
+            if "WEB.JPG" in fileNoCase:
+                continue
+            if "THUMB.JPG" in fileNoCase:
+                continue
             else:
                 print indFour + "add to list "
                 file = saneFile(srcDir, file)
-                fileList.append(file)
-    imageModelsList = []                
-    for file in fileList:  
-        
-        print indThree + "processing: " + file
-        imageModels = buildImageModels(srcDir, file)
-        imageModelsList.append(imageModels)
-    return imageModelsList
+                fileList.append(srcDir + "/" + file)
+
+    print indTwo + "image list ...", fileList
+    imSet = imageSet(srcDir, fileList)
+    imSet.buildImageModelListMd()
+    imSet.writeMdToJson()
+
+    for model in imSet.imageModelList:
+        model.resizeImages()
+
+    print imSet
+    for im in imSet.imageModelList:
+        print im
+    return imSet
+
 
 def buildRouteModelsList(srcDir):
     print indTwo + "building route list ..."
@@ -121,25 +127,29 @@ def buildPageModel(srcDir):
     jsonFileName = srcDir + "/folder.json"
     pageModels = pageAttrs(jsonFileName)
 
-    imgModel = buildImageModelsList(srcDir)
-    pageModels.setImageModels(imgModel)
-    
-    imgCenter = findCenter(imgModel)
-    pageModels.setImageCenter(imgCenter)    
-    
+    imSet = buildImageModelList(srcDir)
+    for im in imSet.imageModelList:
+        print im
+
+    pageModels.setImageModels(imSet.imageModelList)
+
+    imgCenter = imSet.findCenter()
+    pageModels.setImageCenter(imgCenter)
+
     routeModel = buildRouteModelsList(srcDir)
-    pageModels.setRouteModels(routeModel)    
-    
+    pageModels.setRouteModels(routeModel)
+
     subPageModel = buildSubPageModel(srcDir)
-    pageModels.setSubPageModel(subPageModel)   
+    pageModels.setSubPageModel(subPageModel)
 
     parentPageModel = buildParentPageModel(srcDir)
-    pageModels.setParentPageModel(parentPageModel)   
+    pageModels.setParentPageModel(parentPageModel)
 
     return pageModels
     
              
-def buildPageFiles(srcDir, pageModels):	
+def buildPageFiles(srcDir, pageModels):
+
     view = pageView(pageModels)
 
     headMainMenuHtmlStr = view.buildHeadMainColumn()

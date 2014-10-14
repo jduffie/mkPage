@@ -1,101 +1,119 @@
 import json
+import exiftool
 from epil import *
-from pyexif import *
+#from pyexif import *
 from mkPage_cmn import *
-from PIL import ImageOps
+#from PIL import ImageOps
 from math import floor
 import os
 
-def findCenter(coords):
-    avgLat = 0
-    avgLon = 0
-    sumLat = 0
-    sumLon = 0
-    cnt = 0
-    for coord in coords:
-        if coord.lat and coord.lon:
-            sumLat = sumLat + coord.lat
-            sumLon = sumLon + coord.lon
-            cnt = cnt + 1
-            
-    if cnt > 0:
-        avgLat = sumLat / cnt
-        avgLon = sumLon / cnt 
-        
-    print indThree + "Avg Lon : ", avgLon
-    print indThree + "Avg Lat : ", avgLat
-    return avgLat,avgLon
 
+def dumpMetadata(imgFiles):
+    with exiftool.ExifTool() as et:
+        metadata = et.get_metadata_batch(imgFiles)
+    cnt = 0
+    for d in metadata:
+        filePtr = open(imgFiles[cnt]+".json", 'w')
+        json.dump(d, filePtr, indent=4)
+        cnt = cnt + 1
 
 class imageAttrs:
 
-    def __init__(self, srcDir, imageFilename):
+    def __init__(self, srcDir, md):
         self.data = []
-        #print  indThree + imageFilename
-        imgFile = srcDir + "/" + imageFilename
-        self.imgFile = imageFilename
-		
-        try: 
-            exifEditor = ExifEditor(srcDir + "/" + imageFilename)
-            #print indFour + "mod time    : " , exifEditor.getModificationDateTime()
-            #print indFour + "org time    : " , exifEditor.getOriginalDateTime()
-            #print indFour + "description : " , exifEditor.getTag("Description")
-            self.modTime = exifEditor.getModificationDateTime()
-            self.descr = exifEditor.getTag("Description")
-            if self.descr == None:
-                self.descr = ""
 
-        except RuntimeError:
-            print indFour + "RuntimeError: for : " + imageFilename
-            self.modTime = ""
-            self.descr = ""
-			
-        image = Image.open(imgFile)
-        self.image = image
-        self.exif_data = get_exif_data(image)        
-        self.lat = get_lat(self.exif_data)   
-        self.lon = get_lon(self.exif_data)   	
-				
-        print indFive + "Filename    : 	",  imageFilename		
-        print indFive + "Description : 	",  self.descr		
+        self.srcDir = srcDir
+        self.md = md
+
+        # this is the only way I can extract description
+        self.descr = ""
+        self.lat = ""
+        self.lon = ""
+        self.modTime = ""
+        for elem in md:
+            if elem == 'XMP:Description':
+                self.descr = md[elem]
+            if elem == 'EXIF:GPSLatitude':
+                gpsLat = md[elem]
+            if elem == 'EXIF:GPSLatitudeRef':
+                gpsLatRef  = md[elem]
+            if elem == 'EXIF:GPSLongitude':
+                gpsLon = md[elem]
+            if elem == 'EXIF:GPSLongitudeRef':
+                gpsLonRef = md[elem]
+            if elem == 'EXIF:DateTimeOriginal':
+                self.modTime = md[elem]
+            if elem == 'File:FileName':
+                self.imgFile = md[elem]
+
+        if gpsLat and gpsLatRef :
+            lat = gpsLat
+            if gpsLatRef  != "N":
+                lat = 0 - lat
+            self.lat = lat
+
+        if gpsLon and gpsLonRef :
+            lon = gpsLon
+            if gpsLonRef  != "#":
+                lon = 0 - lon
+            self.lon = lon
+
+
+        print indFive + "Filename    : 	", self.imgFile
+        print indFive + "Description : 	", self.descr
         print indFive + "mod time    : 	", self.modTime
-        print indFive + "latitude    : ", self.lat
-        print indFive + "longitude   : ", self.lon
+        print indFive + "latitude    :  ", self.lat
+        print indFive + "longitude   :  ", self.lon
 
 		
-    def resizeImages(self, srcDir, imageFilename):
-        imgFile = srcDir + "/" + imageFilename        
-        
-        targetWidth = 640
-        targetHeight = 480              
-        newImg = self.resizeImage(imgFile, targetHeight, targetWidth)
-                
-        newFilename = imageFilename.rstrip(".JPG") + "_web.JPG"            
+    def resizeImages(self):
+        srcDir = self.srcDir
+        imageFilename = self.imgFile
+        imageFilenameFull = srcDir + "/" + imageFilename
+
+
+        newFilename = imageFilename.rstrip(".JPG") + "_web.JPG"
         newFilenameFull = srcDir + "/" + newFilename
-        if os.path.isfile(newFilenameFull):
-            print indFive +  "artifact found : remove : ", newFilenameFull
-            os.remove(newFilenameFull)
-        newImg.save(newFilenameFull, format='JPEG')        
+        targetWidth = 640
+        targetHeight = 480
+        self.resizeImageStart(imageFilenameFull, newFilenameFull, targetWidth, targetHeight)
         self.webFile = newFilename
 
-        targetWidth = 128
-        targetHeight = 96              
-        newImg = self.resizeImage(imgFile, targetHeight, targetWidth)
         newFilename = imageFilename.rstrip(".JPG") + "_thumb.JPG"
         newFilenameFull = srcDir + "/" + newFilename
-        if os.path.isfile(newFilenameFull):
-            print indFive +  "artifact found : remove : ", newFilenameFull
-            os.remove(newFilenameFull)
-        newImg.save(newFilenameFull, format='JPEG')                
+        targetWidth = 128
+        targetHeight = 96
+        self.resizeImageStart(imageFilenameFull, newFilenameFull, targetWidth, targetHeight)
         self.thumbFile = newFilename
 
-    def resizeImage(self, imgFile, targetHeight, targetWidth):        
+
+    def resizeImageStart(self, imageFilenameFull, newFilenameFull, targetWidth, targetHeight):
+
+        create = False
+        #print indFive +  "testing : ", newFilenameFull
+        if os.path.isfile(newFilenameFull):
+            #print indSix  +  "artifact found : ", newFilenameFull
+            if os.path.getctime(newFilenameFull) < os.path.getctime(imageFilenameFull) :
+                #print indSix + "older, rebuild: " +  newFilenameFull
+                create = True
+        else :
+            #print indSix  + "not found: " +  newFilenameFull
+            create = True
+        if create:
+            #print indSix  + "create: " +  newFilenameFull
+            newImg = self.resizeImage(imageFilenameFull, targetHeight, targetWidth)
+            newImg.save(newFilenameFull, format='JPEG')
+        #else :
+            #print indSix  + "preserve: " +  newFilenameFull
+
+
+    def resizeImage(self, imgFile, targetHeight, targetWidth):
         img = Image.open(imgFile)
         width, height = img.size
-        #print "width,height: ", width,height    
+        #print "width,height: ", width,height
         dstWidth = width
         dstHeight = height
-        
+
         if dstWidth > targetWidth:
             ratio = float(targetWidth)/float(dstWidth)
             dstWidth = targetWidth
@@ -105,15 +123,8 @@ class imageAttrs:
             ratio = float(targetHeight)/float(dstHeight)
             dstHeight = targetHeight
             dstWidth = int(ratio * dstWidth)
-            
+
         newImg = img.resize((dstWidth, dstHeight), Image.ANTIALIAS)
         return newImg
-        
-            
-            
-            
-            
-            
-
             
 		

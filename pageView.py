@@ -10,6 +10,8 @@ class pageView:
     def __init__(self, pageModel):
         self.data = []
         self.pageModel = pageModel
+        for im in pageModel.imageModels:
+            print indTwo + "Img Descr : ", im.descr
 
         
     def prepStrForJscript(self, src):
