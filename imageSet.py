@@ -18,8 +18,10 @@ class imageSet:
         self.imageFileList = imageFileList
 
     def buildImageModelListMd(self):
-        with exiftool.ExifTool() as et:
-            self.mdList = et.get_metadata_batch(self.imageFileList)
+        self.mdList = []
+        if self.imageFileList:
+            with exiftool.ExifTool() as et:
+                self.mdList = et.get_metadata_batch(self.imageFileList)
 
         imageModelList = []
         for md in self.mdList :
@@ -50,7 +52,7 @@ class imageSet:
             avgLat = sumLat / cnt
             avgLon = sumLon / cnt
 
-        print indThree + "Avg Lon : ", avgLon
-        print indThree + "Avg Lat : ", avgLat
+        #print indThree + "Avg Lon : ", avgLon
+        #print indThree + "Avg Lat : ", avgLat
         return avgLat,avgLon
 

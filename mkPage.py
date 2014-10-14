@@ -110,9 +110,9 @@ def buildImageModelList(srcDir):
     for model in imSet.imageModelList:
         model.resizeImages()
 
-    print imSet
-    for im in imSet.imageModelList:
-        print im
+    #print imSet
+    #for im in imSet.imageModelList:
+    #    print im
     return imSet
 
 
@@ -128,8 +128,6 @@ def buildPageModel(srcDir):
     pageModels = pageAttrs(jsonFileName)
 
     imSet = buildImageModelList(srcDir)
-    for im in imSet.imageModelList:
-        print im
 
     pageModels.setImageModels(imSet.imageModelList)
 

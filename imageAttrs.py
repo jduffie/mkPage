@@ -9,8 +9,9 @@ import os
 
 
 def dumpMetadata(imgFiles):
-    with exiftool.ExifTool() as et:
-        metadata = et.get_metadata_batch(imgFiles)
+    if imgFiles:
+        with exiftool.ExifTool() as et:
+            metadata = et.get_metadata_batch(imgFiles)
     cnt = 0
     for d in metadata:
         filePtr = open(imgFiles[cnt]+".json", 'w')
@@ -30,6 +31,10 @@ class imageAttrs:
         self.lat = ""
         self.lon = ""
         self.modTime = ""
+        gpsLat = None
+        gpsLon = None
+        gpsLatRef = None
+        gpsLonRef = None
         for elem in md:
             if elem == 'XMP:Description':
                 self.descr = md[elem]

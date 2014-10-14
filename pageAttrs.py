@@ -8,7 +8,7 @@ class pageAttrs:
         self.data = []
         jsonFile = open(jsonFileName)
         self.jsonFile = jsonFile
-        print "new json file ", jsonFile
+        #print "new json file ", jsonFile
         jsonDict = json.load(jsonFile)
         #print json.dumps(jsonDict)
         self.title = jsonDict["title"]
@@ -23,8 +23,6 @@ class pageAttrs:
 
     def setImageModels(self, imgModels):
         self.imageModels = imgModels
-        for im in imgModels:
-            print im
 
     def setRouteModels(self, routeModels):
         self.routeModels = routeModels

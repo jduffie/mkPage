@@ -10,8 +10,6 @@ class pageView:
     def __init__(self, pageModel):
         self.data = []
         self.pageModel = pageModel
-        for im in pageModel.imageModels:
-            print indTwo + "Img Descr : ", im.descr
 
         
     def prepStrForJscript(self, src):
@@ -32,7 +30,7 @@ class pageView:
                 if "http://" in strElem:
                     strElem = '<a href="' + strElem + '">' + strElem + '</a>'
                 dst += strElem + " "                                
-        print indTwo + "linkifyString : ", dst
+        #print indTwo + "linkifyString : ", dst
         return dst
         
     def buildBody(self):	
@@ -42,9 +40,9 @@ class pageView:
 		
         picStr = ""
         for im in self.pageModel.imageModels:
-            print indTwo + "Img Descr : ", im.descr
+            #print indTwo + "Img Descr : ", im.descr
             strClean = self.linkifyString(im.descr)
-            print indTwo + "strClean : ", strClean
+            #print indTwo + "strClean : ", strClean
             picStr += imageLineTemplate.format(im.imgFile, im.webFile, strClean)
 		
         pm = self.pageModel
@@ -70,7 +68,7 @@ class pageView:
         pm = self.pageModel
         
         if self.mapSatHtml != "" or self.mapRouteHtml != "":
-            print indTwo + "buildMap: writing map html"
+            #print indTwo + "buildMap: writing map html"
             with open (self.scriptDir + "/templates/map.tmpl", "r") as tmplFile:
                 mapTmpl = tmplFile.read()
             self.mapHtml = mapTmpl.format(self.mapSatHtml, self.mapRouteHtml)		
@@ -95,7 +93,7 @@ class pageView:
                 imageVarSuffix = re.sub("\..*$", '', im.imgFile)
                 imageVarSuffix = imageVarSuffix.replace("-", "_");
                 imageVarSuffix = imageVarSuffix.replace(" ", "_");
-                print "    suffix : ", imageVarSuffix
+                #print "    suffix : ", imageVarSuffix
                 caption = self.prepStrForJscript(im.descr)                
                 caption = self.linkifyString(caption)
                 ppStr += pushpinTemplate.format(imageVarSuffix, im.lat, im.lon, caption)
@@ -118,7 +116,7 @@ class pageView:
         with open (self.scriptDir + "/templates/route.tmpl", "r") as tmplFile:
             routeTemplate = tmplFile.read()
 
-        print routeTemplate
+        #print routeTemplate
         rtStr = ""
         for rtFile in self.pageModel.routeModels:
                 # strip all content from the period to end of line
@@ -156,7 +154,7 @@ class pageView:
                 sideMenuItemTmpl = tmplFile.read()	       
             for pm in self.pageModel.subPages:
                 if pm.subdir != ".":
-                    print indTwo + "sideMenuItem: ", pm.title, " ", pm.subdir
+                    #print indTwo + "sideMenuItem: ", pm.title, " ", pm.subdir
                     sideMenuItems += sideMenuItemTmpl.format(pm.title, pm.description, pm.subdir)		
 
         sideMenuBack = ""                
@@ -166,7 +164,7 @@ class pageView:
             with open (self.scriptDir + "/templates/sideMenuBack.tmpl", "r") as tmplFile:
                 sideMenuBackTmpl = tmplFile.read()	       
             sideMenuBack = sideMenuBackTmpl.format(pm.title, pm.description, pm.subdir)		
-            print indTwo + "sideMenuBack " + sideMenuBack
+            #print indTwo + "sideMenuBack " + sideMenuBack
                 
         sideMenuHtml = ""
         with open (self.scriptDir + "/templates/sideMenu.tmpl", "r") as tmplFile:
