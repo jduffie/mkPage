@@ -120,11 +120,12 @@ class pageView:
         rtStr = ""
         for rtFile in self.pageModel.routeModels:
                 # strip all content from the period to end of line
-                rtVarSuffix = re.sub("\..*$", '', rtFile)                               
-                rtVarSuffix = rtVarSuffix.replace("-", "_");
-                rtVarSuffix = rtVarSuffix.replace(" ", "_");
-                #print "    suffix : ", rtVarSuffix
-                rtStr += routeTemplate.format(rtVarSuffix, rtFile)
+                # rtVarSuffix = re.sub("\..*$", '', rtFile)                               
+                # rtVarSuffix = rtVarSuffix.replace("-", "_");
+                # rtVarSuffix = rtVarSuffix.replace(" ", "_");
+                # print "    suffix : ", rtVarSuffix
+                # rtStr += routeTemplate.format(rtVarSuffix, rtFile)
+                rtStr += routeTemplate.format(rtFile)                
     
         ppStr = self.buildPushPinStrings()
 		

@@ -59,7 +59,7 @@ class imageAttrs:
 
         if gpsLon and gpsLonRef :
             lon = gpsLon
-            if gpsLonRef  != "#":
+            if gpsLonRef  != "E":
                 lon = 0 - lon
             self.lon = lon
 
