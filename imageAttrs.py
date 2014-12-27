@@ -64,11 +64,11 @@ class imageAttrs:
             self.lon = lon
 
 
-        print indFive + "Filename    : 	", self.imgFile
-        print indFive + "Description : 	", self.descr
-        print indFive + "mod time    : 	", self.modTime
-        print indFive + "latitude    :  ", self.lat
-        print indFive + "longitude   :  ", self.lon
+        #print indFive + "Filename    : 	", self.imgFile
+        #print indFive + "Description : 	", self.descr
+        #print indFive + "mod time    : 	", self.modTime
+        #print indFive + "latitude    :  ", self.lat
+        #print indFive + "longitude   :  ", self.lon
 
 		
     def resizeImages(self):

@@ -24,9 +24,11 @@ class pageView:
             dst = ""
         else:            
             # replace html with links
-            strList = src.split()
-            dst = ""
+            newStr = src.encode('ascii', 'replace')
+            strList = newStr.split()
+            dst = "".encode('ascii', 'replace')
             for strElem in strList:
+                strElem = strElem.encode('ascii', 'replace')
                 if "http://" in strElem:
                     strElem = '<a href="' + strElem + '">' + strElem + '</a>'
                 dst += strElem + " "                                
@@ -40,16 +42,36 @@ class pageView:
 		
         picStr = ""
         for im in self.pageModel.imageModels:
-            #print indTwo + "Img Descr : ", im.descr
+            print indTwo + "buildBody : Img Descr : ", im.descr
             strClean = self.linkifyString(im.descr)
-            #print indTwo + "strClean : ", strClean
-            picStr += imageLineTemplate.format(im.imgFile, im.webFile, strClean)
+            print indTwo + "buildBody : strClean : ", strClean
+            try:
+                # self.format() raises an error if any argument is 
+                # an unicode string)
+                picStr += imageLineTemplate.format(im.imgFile, im.webFile, strClean)
+                
+            except UnicodeError:
+                print "got the line 54 unicode error: reformatting"
+                unicode = imageLineTemplate.decode('utf-8')                
+                picStr += unicode.format(im.imgFile, im.webFile, strClean)
+                print "new picStr is  : " + picStr
 		
         pm = self.pageModel
         # write string into the body.html with header args
         with open (self.scriptDir + "/templates/body.tmpl", "r") as tmplFile:
             bodyTmpl = tmplFile.read()
-        self.bodyHtml = bodyTmpl.format(pm.title, pm.date, pm.location, pm.description, picStr)		
+            try:
+                # self.format() raises an error if any argument is 
+                # an unicode string)
+                picStr = picStr.encode('ascii', 'xmlcharrefreplace')
+                self.bodyHtml = bodyTmpl.format(pm.title, pm.date, pm.location, pm.description, picStr)		
+                
+            except UnicodeError:
+                print "got the line 69 unicode error: reformatting"
+                unicode = bodyTmpl.decode('utf-8')
+                self.bodyHtml = unicode.format(pm.title, pm.date, pm.location, pm.description, picStr)		
+
+
         return self.bodyHtml		
 
 
@@ -71,6 +93,7 @@ class pageView:
             #print indTwo + "buildMap: writing map html"
             with open (self.scriptDir + "/templates/map.tmpl", "r") as tmplFile:
                 mapTmpl = tmplFile.read()
+            mapTmpl = mapTmpl.decode('utf-8')
             self.mapHtml = mapTmpl.format(self.mapSatHtml, self.mapRouteHtml)		
         else:
             self.mapHtml = ""
@@ -79,7 +102,7 @@ class pageView:
     def buildPushPinStrings(self):
         # build string containing the pic html
         with open (self.scriptDir + "/templates/pushpin.tmpl", "r") as tmplFile:
-            pushpinTemplate = tmplFile.read()
+            pushpinTemplate = tmplFile.read()            
     
         #print pushpinTemplate
         ppStr = ""
@@ -96,7 +119,16 @@ class pageView:
                 #print "    suffix : ", imageVarSuffix
                 caption = self.prepStrForJscript(im.descr)                
                 caption = self.linkifyString(caption)
-                ppStr += pushpinTemplate.format(imageVarSuffix, im.lat, im.lon, caption)
+                
+                try: 
+                    testStr = pushpinTemplate.format(imageVarSuffix, im.lat, im.lon, caption)
+                
+                except UnicodeError:
+                    print "got the line 128 unicode error: reformatting : " + pushpinTemplate
+                    unicode = pushpinTemplate.decode('utf-8')                
+                    testStr = unicode.format(imageVarSuffix, im.lat, im.lon, caption)
+                    print "new testStr is  : " + testStr
+                ppStr += testStr
         return ppStr
 
         
@@ -107,6 +139,7 @@ class pageView:
         # write string into the body.html with header args
         with open (self.scriptDir + "/templates/mapSat.tmpl", "r") as tmplFile:
             mapTmpl = tmplFile.read()
+        mapTmpl = mapTmpl.decode('utf-8')
         latCenter,lonCenter = self.pageModel.imageCenter
         mapSatHtml = mapTmpl.format(ppStr,latCenter,lonCenter)		
         return mapSatHtml
@@ -161,7 +194,7 @@ class pageView:
         sideMenuBack = ""                
         if self.pageModel.parentPageModel:
             pm = self.pageModel.parentPageModel
-            print indTwo + "parentPageModel: title " + pm.title
+            print indTwo + "parentPageModel: title " + pm.title + " subdir : " + pm.subdir
             with open (self.scriptDir + "/templates/sideMenuBack.tmpl", "r") as tmplFile:
                 sideMenuBackTmpl = tmplFile.read()	       
             sideMenuBack = sideMenuBackTmpl.format(pm.title, pm.description, pm.subdir)		

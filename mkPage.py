@@ -1,13 +1,17 @@
-from epil import *
+# from epil import *
 import sys
+
 from pageAttrs import *
 from imageSet import *
-from imageAttrs import *
+# from imageAttrs import *
+
 from pageView import *
 import argparse
-#from __future__ import print_function
-import os
+# from __future__ import print_function
+# import os
 from mkPage_cmn import *
+
+print 'hi'
 
 # if file has spaces, dashes, etc move to new name
 def saneFile(srcDir, srcFilename):
@@ -26,7 +30,7 @@ def saneFile(srcDir, srcFilename):
 
 # recursively search subdirs for instances of a file with given suffix 
 def buildAllSubDirFileList(topDir, suffix):
-    print indTwo + "Searching {0} for .{1} extension".format(topDir, suffix)
+    print indTwo + "buildAllSubDirFileList - Searching {0} for .{1} extension".format(topDir, suffix)
     searchStr = "." + suffix.upper()
     filesList = []
     for root, dirs, files in os.walk(topDir):
@@ -40,7 +44,7 @@ def buildAllSubDirFileList(topDir, suffix):
 
 # search all immediate subdirs for instances of a file with given filename
 def buildSubDirFileList(topDir, fileName):
-    print indTwo + "Searching {0} for .{1} extension".format(topDir, fileName)
+    print indTwo + "buildSubDirFileList : Searching {0} for .{1} extension".format(topDir, fileName)
     filesList = []
     for dir in os.walk(topDir).next()[1]:
         testFile = dir + "/" + fileName
@@ -71,7 +75,7 @@ def buildParentPageModel(srcDir):
     testFile = srcDir + "/../folder.json"
     pageModel = None
     if os.path.isfile(testFile):
-        print indTwo + "adding parent mdFile : ", testFile
+        print indTwo + "buildParentPageModel : adding parent mdFile : ", testFile
         pageModel =  pageAttrs(testFile)
     return pageModel
     
@@ -92,17 +96,17 @@ def buildImageModelList(srcDir):
     for file in os.listdir(srcDir):
         fileNoCase = file.upper()
         if fileNoCase.endswith(".JPG"):
-            print indThree + "found : " + file
+            #print indThree + "found : " + file
             if "WEB.JPG" in fileNoCase:
                 continue
             if "THUMB.JPG" in fileNoCase:
                 continue
             else:
-                print indFour + "add to list "
+                #print indFour + "add to list: " + file
                 file = saneFile(srcDir, file)
                 fileList.append(srcDir + "/" + file)
 
-    print indTwo + "image list ...", fileList
+    #print indTwo + "image list ...", fileList
     imSet = imageSet(srcDir, fileList)
     imSet.buildImageModelListMd()
     imSet.writeMdToJson()
@@ -161,8 +165,9 @@ def buildPageFiles(srcDir, pageModels):
         tmpFile.close()
 
     mapHtmlStr = view.buildMap()
+    mapHtmlStrUtf8 = mapHtmlStr.encode('UTF-8')
     with open (srcDir + "/map.html", "w") as tmpFile:
-        tmpFile.write(mapHtmlStr)		
+        tmpFile.write(mapHtmlStrUtf8)		
         tmpFile.close()		
         
     sideMenuHtmlStr = view.buildSideMenu()
@@ -192,6 +197,8 @@ def parseArgs(argv):
 def main(argv):
     print "mkPage - creates an html page from page descr json file and images' exif data"
     args = parseArgs(argv)
+    print "src directory: " +  args.srcDir	
+      
     print indOne + "Input: "
     print indTwo + "src directory: " +  args.srcDir	
     pageModels = buildPageModel(args.srcDir)
