@@ -1,0 +1,40 @@
+#########################################################################
+#  eol strategy is bruteforce but adaptable.
+#    The priority are the scripts.  We need to ensure they are
+#        executable on linux.
+#    We are calling out file types explicitly that we want to
+#        force to be linux-able
+#########################################################################
+
+# Set the default behavior, in case people don't have core.autocrlf set.
+* text eol=lf
+
+#
+#  NOTE:
+#     ALL OF FOLLOWING ARE NOT NEEDED IF WE MAINTAIN THE * text eol=lf
+#
+#     We keep this as a safety valve in case someone tweaks that
+#     global setting.
+#
+
+# Explicitly declare text files you want to always be normalized and converted
+# to native line endings on checkout.
+*.java text
+*.sh text
+*.json text
+
+
+# LF Always:
+#    Declare files that will always have LF line endings on checkout.
+*.java text eol=lf
+*.sh text eol=lf
+*.json text eol=lf
+
+# CRLF Always:
+#    Declare files that will always have CRLF line endings on checkout.
+## *.sln text eol=crlf
+
+
+# Denote all files that are truly binary and should not be modified.
+*.png binary
+*.jpg binary
