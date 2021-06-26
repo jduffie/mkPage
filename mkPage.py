@@ -56,9 +56,12 @@ def buildSubDirFileList(topDir, fileName):
             #if os.path.isfile(testFile):
             #    print (indThree, "append testFile: ", testFile)
             #    filesList.append(testFile)
-            if os.path.splitext(f)[1] in fileName:
+            if f == fileName:
                 print (indThree, "append file: ", f)
                 filesList.append(os.path.join(root, f))
+            #if os.path.splitext(f)[1] in fileName:
+            #    print (indThree, "append file: ", f)
+            #    filesList.append(os.path.join(root, f))
     #print(indThree, " os2 :", topDir)
     #for dir in os.walk(topDir).next()[1]:
     #    print(indThree, " dir:", dir)
@@ -180,9 +183,9 @@ def buildPageFiles(srcDir, pageModels):
         tmpFile.close()
 
     mapHtmlStr = view.buildMap()
-    mapHtmlStrUtf8 = mapHtmlStr.encode('UTF-8')
+    # mapHtmlStrUtf8 = mapHtmlStr.encode('UTF-8')
     with open (srcDir + "/map.html", "w") as tmpFile:
-        tmpFile.write(mapHtmlStrUtf8)		
+        tmpFile.write(mapHtmlStr)		
         tmpFile.close()		
         
     sideMenuHtmlStr = view.buildSideMenu()

@@ -25,9 +25,12 @@ class pageView:
         else:            
             # replace html with links
             newStr = src.encode('ascii', 'replace')
+            print (indTwo + "newStr : ", newStr)
             strList = newStr.split()
+            print (indTwo + "strList : ", strList)
             dst = "".encode('ascii', 'replace')
             for strElem in strList:
+                print (indTwo + "strElem : ", strElem)
                 strElem = strElem.encode('ascii', 'replace')
                 if "http://" in strElem:
                     strElem = '<a href="' + strElem + '">' + strElem + '</a>'
@@ -43,12 +46,16 @@ class pageView:
         picStr = ""
         for im in self.pageModel.imageModels:
             print (indTwo + "buildBody : Img Descr : ", im.descr)
-            strClean = self.linkifyString(im.descr)
-            print (indTwo + "buildBody : strClean : ", strClean)
+            # strClean = self.linkifyString(im.descr)
+            strClean = im.descr
+            print (indTwo + "buildBody : strClean : [", strClean, "]")
+            print (indThree + "buildBody : picStr : [", picStr, "]")
             try:
                 # self.format() raises an error if any argument is 
                 # an unicode string)
+                print (indThree + "buildBody : strClean : [", strClean, "]")
                 picStr += imageLineTemplate.format(im.imgFile, im.webFile, strClean)
+                print (indThree + "buildBody : picStr : [", picStr, "]")
                 
             except UnicodeError:
                 print ("got the line 54 unicode error: reformatting")
@@ -64,6 +71,11 @@ class pageView:
                 # self.format() raises an error if any argument is 
                 # an unicode string)
                 picStr = picStr.encode('ascii', 'xmlcharrefreplace')
+                print("pm.title", pm.title)
+                print("pm.date", pm.date)
+                print("pm.location", pm.location)
+                print("pm.description", pm.description)
+                print("picStr", picStr)
                 self.bodyHtml = bodyTmpl.format(pm.title, pm.date, pm.location, pm.description, picStr)		
                 
             except UnicodeError:
@@ -93,7 +105,7 @@ class pageView:
             #print indTwo + "buildMap: writing map html"
             with open (self.scriptDir + "/templates/map.tmpl", "r") as tmplFile:
                 mapTmpl = tmplFile.read()
-            mapTmpl = mapTmpl.decode('utf-8')
+            # mapTmpl = mapTmpl.decode('utf-8')
             self.mapHtml = mapTmpl.format(self.mapSatHtml, self.mapRouteHtml)		
         else:
             self.mapHtml = ""
@@ -118,7 +130,7 @@ class pageView:
                 imageVarSuffix = imageVarSuffix.replace(" ", "_");
                 #print "    suffix : ", imageVarSuffix
                 caption = self.prepStrForJscript(im.descr)                
-                caption = self.linkifyString(caption)
+                # caption = self.linkifyString(caption)
                 
                 try: 
                     testStr = pushpinTemplate.format(imageVarSuffix, im.lat, im.lon, caption)
@@ -139,7 +151,7 @@ class pageView:
         # write string into the body.html with header args
         with open (self.scriptDir + "/templates/mapSat.tmpl", "r") as tmplFile:
             mapTmpl = tmplFile.read()
-        mapTmpl = mapTmpl.decode('utf-8')
+        # mapTmpl = mapTmpl.decode('utf-8')
         latCenter,lonCenter = self.pageModel.imageCenter
         mapSatHtml = mapTmpl.format(ppStr,latCenter,lonCenter)		
         return mapSatHtml
