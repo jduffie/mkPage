@@ -20,6 +20,7 @@ class imageSet:
     def buildImageModelListMd(self):
         self.mdList = []
         if self.imageFileList:
+            print (self.imageFileList, " what is list")
             with exiftool.ExifTool() as et:
                 self.mdList = et.get_metadata_batch(self.imageFileList)
 

@@ -4,7 +4,7 @@ from PIL.ExifTags import TAGS, GPSTAGS
 def get_field (image, field) :
     exif = image._getexif()
     for (k,v) in exif.iteritems():
-        print "my key",  k, "my val", v
+        print ("my key",  k, "my val", v)
         if TAGS.get(k) == field:
             return v
 
@@ -119,4 +119,4 @@ def get_lon(exif_data):
 if __name__ == "__main__":
     image = Image.open("test.jpg")
     exif_data = get_exif_data(image)
-    print get_lat_lon(exif_data)
+    print (get_lat_lon(exif_data))

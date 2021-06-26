@@ -11,7 +11,6 @@ import argparse
 # import os
 from mkPage_cmn import *
 
-print 'hi'
 
 # if file has spaces, dashes, etc move to new name
 def saneFile(srcDir, srcFilename):
@@ -30,7 +29,7 @@ def saneFile(srcDir, srcFilename):
 
 # recursively search subdirs for instances of a file with given suffix 
 def buildAllSubDirFileList(topDir, suffix):
-    print indTwo + "buildAllSubDirFileList - Searching {0} for .{1} extension".format(topDir, suffix)
+    print (indTwo + "buildAllSubDirFileList - Searching {0} for .{1} extension".format(topDir, suffix))
     searchStr = "." + suffix.upper()
     filesList = []
     for root, dirs, files in os.walk(topDir):
@@ -38,27 +37,43 @@ def buildAllSubDirFileList(topDir, suffix):
             fileNoCase = file.upper()	
             #print indThree + "file : " + file
             if fileNoCase.endswith(searchStr):
-                print indThree + "found: ", os.path.join(root, file)
+                print (indThree + "found: ", os.path.join(root, file))
                 filesList.append(os.path.join(root, file))
     return filesList
 
 # search all immediate subdirs for instances of a file with given filename
 def buildSubDirFileList(topDir, fileName):
-    print indTwo + "buildSubDirFileList : Searching {0} for .{1} extension".format(topDir, fileName)
+    print (indTwo + "buildSubDirFileList : Searching {0} for {1} ".format(topDir, fileName))
+    print (indThree, "fileName: ", fileName)
     filesList = []
-    for dir in os.walk(topDir).next()[1]:
-        testFile = dir + "/" + fileName
-        if os.path.isfile(testFile):
-            filesList.append(testFile)
+     
+    print(indThree, " os:", topDir)
+    for root, dirs, files in os.walk(topDir):
+        print (indThree, "root:", root, "dirs:", dirs)
+        for f in files:
+            #testFile = root + "/" + f
+            print (indThree, "file: ", f)
+            #if os.path.isfile(testFile):
+            #    print (indThree, "append testFile: ", testFile)
+            #    filesList.append(testFile)
+            if os.path.splitext(f)[1] in fileName:
+                print (indThree, "append file: ", f)
+                filesList.append(os.path.join(root, f))
+    #print(indThree, " os2 :", topDir)
+    #for dir in os.walk(topDir).next()[1]:
+    #    print(indThree, " dir:", dir)
+    #    testFile = dir + "/" + fileName
+    #    if os.path.isfile(testFile):
+    #        filesList.append(testFile)
     return filesList
 
 def buildNestedFoldersMdList(srcDir):
-    print indTwo + "building list for folder meta data for nested folders ..."
+    print (indTwo + "building list for folder meta data for nested folders ...")
     fileList = []    
     jsonFileList = buildSubDirFileList(srcDir, "folder.json")
     for file in jsonFileList:
         if "folder.json" in file :
-            print indThree + "adding mdFile : ", file
+            print (indThree + "adding mdFile : ", file)
             fileList.append(file)
     return fileList
 
@@ -68,14 +83,14 @@ def buildSubPageModel(srcDir):
     for mdFile in mdFileList:
         pageModel =  pageAttrs(mdFile)
         subPageModelList.append(pageModel)
-        print indTwo + "appending : ", pageModel.title
+        print (indTwo + "appending : ", pageModel.title)
     return subPageModelList
 
 def buildParentPageModel(srcDir):
     testFile = srcDir + "/../folder.json"
     pageModel = None
     if os.path.isfile(testFile):
-        print indTwo + "buildParentPageModel : adding parent mdFile : ", testFile
+        print (indTwo + "buildParentPageModel : adding parent mdFile : ", testFile)
         pageModel =  pageAttrs(testFile)
     return pageModel
     
@@ -88,7 +103,7 @@ def buildImageModels(srcDir, imageFilename):
 
 # create a list of type imag  eAttrs
 def buildImageModelList(srcDir):
-    print indTwo + "building image list ..."
+    print (indTwo + "building image list ...")
         # get a list of all images in the srcDir
         # walk the list to build the imagAttrs objects
     fileList = []
@@ -121,13 +136,13 @@ def buildImageModelList(srcDir):
 
 
 def buildRouteModelsList(srcDir):
-    print indTwo + "building route list ..."
+    print (indTwo + "building route list ...")
     fileList = buildAllSubDirFileList(srcDir, "kml")
     return fileList
 
 
 def buildPageModel(srcDir):
-    print indTwo + "parse folder's json file ..."
+    print (indTwo + "parse folder's json file ...")
     jsonFileName = srcDir + "/folder.json"
     pageModels = pageAttrs(jsonFileName)
 
@@ -195,12 +210,12 @@ def parseArgs(argv):
 
 
 def main(argv):
-    print "mkPage - creates an html page from page descr json file and images' exif data"
+    print ("mkPage - creates an html page from page descr json file and images' exif data")
     args = parseArgs(argv)
-    print "src directory: " +  args.srcDir	
+    print ("src directory: " ,  args.srcDir	)
       
-    print indOne + "Input: "
-    print indTwo + "src directory: " +  args.srcDir	
+    print (indOne + "Input: ")
+    print (indTwo , "src directory: " ,  args.srcDir	)
     pageModels = buildPageModel(args.srcDir)
     buildPageFiles(args.srcDir, pageModels)
     

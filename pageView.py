@@ -42,19 +42,19 @@ class pageView:
 		
         picStr = ""
         for im in self.pageModel.imageModels:
-            print indTwo + "buildBody : Img Descr : ", im.descr
+            print (indTwo + "buildBody : Img Descr : ", im.descr)
             strClean = self.linkifyString(im.descr)
-            print indTwo + "buildBody : strClean : ", strClean
+            print (indTwo + "buildBody : strClean : ", strClean)
             try:
                 # self.format() raises an error if any argument is 
                 # an unicode string)
                 picStr += imageLineTemplate.format(im.imgFile, im.webFile, strClean)
                 
             except UnicodeError:
-                print "got the line 54 unicode error: reformatting"
+                print ("got the line 54 unicode error: reformatting")
                 unicode = imageLineTemplate.decode('utf-8')                
                 picStr += unicode.format(im.imgFile, im.webFile, strClean)
-                print "new picStr is  : " + picStr
+                print ("new picStr is  : " + picStr)
 		
         pm = self.pageModel
         # write string into the body.html with header args
@@ -67,7 +67,7 @@ class pageView:
                 self.bodyHtml = bodyTmpl.format(pm.title, pm.date, pm.location, pm.description, picStr)		
                 
             except UnicodeError:
-                print "got the line 69 unicode error: reformatting"
+                print ("got the line 69 unicode error: reformatting")
                 unicode = bodyTmpl.decode('utf-8')
                 self.bodyHtml = unicode.format(pm.title, pm.date, pm.location, pm.description, picStr)		
 
@@ -77,12 +77,12 @@ class pageView:
 
 		
     def buildMap(self):	        
-        print indTwo + "buildMap: sat"
+        print (indTwo + "buildMap: sat")
         self.mapSatHtml = ""
         if self.pageModel.imageModels:
             self.mapSatHtml = self.buildMapSat()
             
-        print indTwo + "buildMap: route"
+        print (indTwo + "buildMap: route")
         self.mapRouteHtml = ""                            
         if self.pageModel.routeModels:
             self.mapRouteHtml = self.buildMapRoute()
@@ -124,10 +124,10 @@ class pageView:
                     testStr = pushpinTemplate.format(imageVarSuffix, im.lat, im.lon, caption)
                 
                 except UnicodeError:
-                    print "got the line 128 unicode error: reformatting : " + pushpinTemplate
+                    print ("got the line 128 unicode error: reformatting : " + pushpinTemplate)
                     unicode = pushpinTemplate.decode('utf-8')                
                     testStr = unicode.format(imageVarSuffix, im.lat, im.lon, caption)
-                    print "new testStr is  : " + testStr
+                    print ("new testStr is  : " + testStr)
                 ppStr += testStr
         return ppStr
 
@@ -194,7 +194,7 @@ class pageView:
         sideMenuBack = ""                
         if self.pageModel.parentPageModel:
             pm = self.pageModel.parentPageModel
-            print indTwo + "parentPageModel: title " + pm.title + " subdir : " + pm.subdir
+            print (indTwo + "parentPageModel: title " + pm.title + " subdir : " + pm.subdir)
             with open (self.scriptDir + "/templates/sideMenuBack.tmpl", "r") as tmplFile:
                 sideMenuBackTmpl = tmplFile.read()	       
             sideMenuBack = sideMenuBackTmpl.format(pm.title, pm.description, pm.subdir)		

@@ -16,9 +16,9 @@ class pageAttrs:
         self.location = jsonDict["location"]
         self.date = jsonDict["date"]
         self.subdir = os.path.dirname(jsonFileName)
-        print indFour + "pageAttrs self.title  " + self.title	
-        print indFour + "pageAttrs self.subdir " + self.subdir        
-        print indFour + "pageAttrs self.location " + self.location        
+        print (indFour + "pageAttrs self.title  " + self.title	)
+        print (indFour + "pageAttrs self.subdir " + self.subdir        )
+        print (indFour + "pageAttrs self.location " + self.location        )
         
         #print indThree + self.location
         #print indThree + self.date
